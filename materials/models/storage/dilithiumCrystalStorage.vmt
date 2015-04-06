@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\storage\dilithiumCrystalStorage"
+	$surfaceprop "Plastic_Box"
+}

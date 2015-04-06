@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\LCARS\door_panel_ON"
+	"$surfaceprop" "computer"
+	"$selfillum" "1"
+}

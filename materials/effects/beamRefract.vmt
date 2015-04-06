@@ -1,0 +1,12 @@
+"Refract"
+{
+	"$bluramount" .8
+	"$refractamount" "5"
+	"$refracttint" "[.8 .8 .8]"
+	
+	"$dudvmap" "effects/beamRefract_dudv"
+	"$normalmap" "effects/beamRefract_normal"
+	
+	"$bumpframe" "0"
+
+}

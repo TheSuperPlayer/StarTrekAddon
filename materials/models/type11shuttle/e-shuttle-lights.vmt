@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\type11shuttle\e-shuttle-lights"
+	"$surfaceprop" "metalpanel"
+	"$selfillum" "1"
+}

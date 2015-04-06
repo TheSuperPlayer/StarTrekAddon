@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\storage\hydrogenDeuteriumConv_active"
+	$surfaceprop "Plastic_Box"
+	"$selfillum" "1"
+	"Proxies"
+	{
+    	"AnimatedTexture"
+      	{
+        	"animatedtexturevar" "$basetexture"
+         	"animatedtextureframenumvar" "$frame"
+         	"animatedtextureframerate" 9
+      	}
+   	}
+}

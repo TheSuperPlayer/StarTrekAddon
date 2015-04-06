@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture" "weapons/phaserT2_killicon"
+	"$vertexalpha" 1
+	"$vertexcolor" 1
+}

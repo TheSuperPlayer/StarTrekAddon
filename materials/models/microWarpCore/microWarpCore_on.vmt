@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+    "$basetexture" "models\microWarpCore\microWarpCore_on"
+	"$model" "1"
+	"$surfaceprop" "metalpanel"
+	"$selfillum" "1"
+	"Proxies"
+	{
+    	"AnimatedTexture"
+      	{
+        	"animatedtexturevar" "$basetexture"
+         	"animatedtextureframenumvar" "$frame"
+         	"animatedtextureframerate" 9
+      	}
+   	}
+}

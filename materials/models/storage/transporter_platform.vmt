@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\storage\transporter_platform"
+	"$surfaceprop" "Plastic_Box"
+	"$selfillum" "1"
+}

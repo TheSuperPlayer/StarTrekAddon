@@ -1,0 +1,13 @@
+"UnlitGeneric"
+{
+	// Original shader: DecalSelfIllumVertexAlphaBlend
+	"$translucent" 1
+	"$vertexcolor" 1
+	"$vertexalpha" 1
+	"$decal" 1
+	"$basetexture" "effects/phaserHeat"
+	"$decalscale" 2.50
+	"$decalfadeduration" 5.00
+	"$decalfadetime" 10.00
+	"$decalsecondpass" 1
+}

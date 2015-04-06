@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\storage\plastic01"
+	$surfaceprop "Plastic_Box"
+}

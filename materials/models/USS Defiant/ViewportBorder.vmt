@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's StarShip Pack/USS Defiant/ViewportBorder"
+
+	"$SelfIllum" "1"
+	"$SelfIllumMask" "models/ApwnInTheDark's StarShip Pack/USS Defiant/Special/ViewportBorder-SelfIllum"
+}

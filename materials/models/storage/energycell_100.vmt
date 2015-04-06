@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\storage\energycell_100"
+	"$surfaceprop" "Plastic_Box"
+	"$selfillum" "1"
+
+}

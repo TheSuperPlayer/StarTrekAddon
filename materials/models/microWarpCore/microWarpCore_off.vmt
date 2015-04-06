@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\microWarpCore\microWarpCore_off"
+	"$surfaceprop" "metalpanel"
+}

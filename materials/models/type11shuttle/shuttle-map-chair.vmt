@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\type11shuttle\shuttle-map-chair"
+	"$surfaceprop" "default"
+}

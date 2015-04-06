@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\storage\hydrogenDeuteriumConv"
+	$surfaceprop "Plastic_Box"
+	"$selfillum" "1"
+}

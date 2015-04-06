@@ -1,0 +1,15 @@
+"UnLitGeneric"
+{
+	"$basetexture" "effects/transport/transport"
+	"$model"	"1"
+	"$translucent"	"1"
+	"Proxies"
+	{
+		"TextureScroll"
+		{
+			"texturescrollvar"	"$baseTextureTransform"
+			"texturescrollrate"	0.1
+			"texturescrollangle"	45
+		}
+	}
+}

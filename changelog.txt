@@ -1,0 +1,16 @@
+
+Rev. 01 (03-04-2015)
+-----------------------------------------------
+-Added Star Trek Type 11 Shuttle
+-Added Transporter
+-Added Star Trek Tab
+---Added Ship Core (Disabled because of bugs)
+---Added Phaser array(Disabled because of bugs)
+-Added Player Weapons
+---Phaser
+---Phaser Riffle
+---Compression Phaser
+---Tricorder
+
+
+

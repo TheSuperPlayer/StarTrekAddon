@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\LCARS\isoChip_green"
+	"$surfaceprop" "glass"
+	"$translucent" "1"
+}

@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's StarShip Pack/USS Defiant/SilverStripedWallpaper"
+
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models/ApwnInTheDark's StarShip Pack/USS Defiant/Special/SilverStripedWallpaper-Reflect"
+}

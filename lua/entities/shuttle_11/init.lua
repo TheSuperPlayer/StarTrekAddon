@@ -43,7 +43,7 @@ function ENT:Initialize()
 	self.PhaserCharge = 100
 	self:SetNetworkedInt("phaserCharge",self.PhaserCharge)
 	self.BeamPerson = self:GetOwner()
-	self:SetNetworkedInt("health",100)
+	self:SetNetworkedInt("health",self.EntHealth)
 	self:SetNetworkedEntity("owner",self.Owner)
 	self:SetNetworkedEntity("entity",self.Entity)
 

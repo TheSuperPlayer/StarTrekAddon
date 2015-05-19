@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Drydocks/LowerSection+SelfIllum"
+	
+	"$BumpMap" "models/ApwnInTheDark's Starship Pack/Drydocks/Special/LowerSection-BumpMap+Phong"
+	
+	"$SelfIllum" "1"
+
+	"$Phong" "1"
+	"$PhongBoost" "10"
+	"$phongexponent" "50"
+	"$PhongFresnelRanges"	"[.05 .5 1]"
+}

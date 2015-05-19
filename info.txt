@@ -2,9 +2,9 @@
 {
 	"name"				"StarTrekAddon"
 	"version"			"1"
-	"up_date"			"3rd April 2015"
+	"up_date"			"19th April 2015"
 	"author_name"			"SuperPlayer"
-	"author_email"			""
+	"author_email"			"peterotto3475@gmail.com"
 	"author_url"			"None"
 	"info"				"A Star Trek Addon."
 	"override"			"0"

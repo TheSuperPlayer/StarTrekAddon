@@ -1,7 +1,8 @@
 Credits go to:
->> Gene Roddenberry for creating Star Trek.
->> Crudcakes for creating the phaser base.
 
+>>ApwnInTheDark for the models
+>> Crudcakes for creating the phaser base.
+>> The CAP Team for the Phaserbullet/Torpedo code
 
 ******************************************************************************************************************
 *                                                                                                                *

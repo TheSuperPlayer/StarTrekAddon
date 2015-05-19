@@ -1,11 +1,12 @@
 
-Rev. 01 (03-04-2015)
+Version 1.0 (19-05-2015)
 -----------------------------------------------
 -Added Star Trek Type 11 Shuttle
+-Added Star Trek Type 6 Shuttle
+-Added Star Trek Type 9 Shuttle
 -Added Transporter
 -Added Star Trek Tab
----Added Ship Core (Disabled because of bugs)
----Added Phaser array(Disabled because of bugs)
+---Drydock Prototype (May be unstable)
 -Added Player Weapons
 ---Phaser
 ---Phaser Riffle

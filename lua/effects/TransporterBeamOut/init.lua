@@ -1,6 +1,5 @@
-//Based on the CDS_Disintegrate effect
-//All credits go to the CDS team !!!
-// BEAM FADE IN
+
+// BEAM FADE OUT
 function EFFECT:Init(data)
 	self.entity = data:GetEntity()
 	if(!self.entity:IsValid()) then return end

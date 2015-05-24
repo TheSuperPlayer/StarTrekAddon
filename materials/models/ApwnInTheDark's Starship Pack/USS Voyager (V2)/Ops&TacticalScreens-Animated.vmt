@@ -1,0 +1,22 @@
+"VertexLitGeneric"
+{
+
+"$basetexture" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/Animated/Ops&TacticalScreens-Animated"
+
+"$SelfIllum" "1"
+"$SelfIllumMask" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/Animated/Special/Ops&TacticalScreens-SelfIllum"
+	
+"$Envmap" "Env_CubeMap"
+"$EnvMapMask" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/Animated/Special/Ops&TacticalScreens-Reflect"
+
+"$frame" "8"
+
+"Proxies" 
+{
+"AnimatedTexture" 
+{ 
+"animatedTextureVar" "$basetexture" 
+"animatedTextureFrameNumVar" "$frame" 
+"animatedTextureFrameRate" "6"
+}
+}

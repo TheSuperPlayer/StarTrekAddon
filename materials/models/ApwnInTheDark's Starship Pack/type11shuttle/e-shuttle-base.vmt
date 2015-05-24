@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\type11shuttle\e-shuttle-base"
+	"$surfaceprop" "metalpanel"
+}

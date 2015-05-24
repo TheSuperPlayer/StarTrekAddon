@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Props/KlingonBat'leth"
+	
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models/ApwnInTheDark's Starship Pack/Props/Special/KlingonBat'leth-Reflect"
+}

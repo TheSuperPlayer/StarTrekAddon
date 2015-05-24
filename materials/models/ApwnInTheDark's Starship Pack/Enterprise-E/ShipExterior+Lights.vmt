@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$BaseTexture" "models/ApwnInTheDark's Starship Pack/Enterprise-E/ShipExterior+Lights"
+	
+	"$BumpMap" "models/ApwnInTheDark's Starship Pack/Enterprise-E/Special/ShipExterior+Lights-BumpMap+Phong"
+	
+	"$SelfIllum" "1"
+
+	"$Phong" "1"
+	"$PhongBoost" "15"
+	"$PhongFresnelRanges"	"[.05 .5 1]"
+}

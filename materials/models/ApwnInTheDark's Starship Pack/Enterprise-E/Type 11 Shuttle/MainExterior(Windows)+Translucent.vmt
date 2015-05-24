@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "Models/ApwnInTheDark's Starship Pack/Enterprise-E/Type 11 Shuttle/MainExterior(Windows)+Translucent"
+	
+	"$Translucent" "1"
+
+	"$EnvMap" "Env_CubeMap"
+}

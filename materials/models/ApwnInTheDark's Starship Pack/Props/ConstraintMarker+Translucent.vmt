@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Shared Materials/ConstraintMarker+Translucent"
+	
+	"$AlphaTest" "1"
+}

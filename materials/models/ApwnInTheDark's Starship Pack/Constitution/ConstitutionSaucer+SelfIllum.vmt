@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "Models/ApwnInTheDark's Starship Pack/Constitution/ConstitutionSaucer+SelfIllum"
+	"$SelfIllum" "1"
+
+	"$BumpMap" "Models/ApwnInTheDark's Starship Pack/Constitution/Special/ConstitutionSaucer-BumpMap+Phong"
+
+	"$Phong" "1"
+	"$PhongExponent" "33"
+	"$phongboost" "7.5"
+	"$phongfresnelranges"	"[.05 .5 1]"
+}

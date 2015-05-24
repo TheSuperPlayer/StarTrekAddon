@@ -1,0 +1,23 @@
+"UnlitGeneric"
+{
+"$basetexture" "Models/ApwnInTheDark's Starship Pack/Constitution/Bussards-Animated"
+	
+"$EnvMap" "Env_CubeMap"
+
+"$frame" "4"
+
+"Proxies"
+
+{
+
+"AnimatedTexture"
+ 
+{
+
+"animatedTextureVar" "$basetexture" 
+"animatedTextureFrameNumVar" "$frame" 
+"animatedTextureFrameRate" "24"
+
+}
+}
+}

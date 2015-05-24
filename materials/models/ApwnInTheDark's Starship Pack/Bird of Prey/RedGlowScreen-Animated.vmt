@@ -1,0 +1,21 @@
+VertexLitGeneric
+{
+"$basetexture" "models/ApwnInTheDark's Starship Pack/Bird of Prey/Animated/RedGlowScreen-Animated"
+
+"$frame" "8"
+
+"$SelfIllum" "1"
+"$SelfIllumMask" "models/ApwnInTheDark's Starship Pack/Bird of Prey/Animated/Special/RedGlowScreen-SelfIllum"
+
+"$EnvMap" "Env_CubeMap"
+"$EnvMapMask" "models/ApwnInTheDark's Starship Pack/Bird of Prey/Animated/Special/RedGlowScreen-Reflect"
+
+"Proxies" 
+{
+"AnimatedTexture" 
+{ 
+"animatedTextureVar" "$basetexture" 
+"animatedTextureFrameNumVar" "$frame" 
+"animatedTextureFrameRate" "8"
+}
+}

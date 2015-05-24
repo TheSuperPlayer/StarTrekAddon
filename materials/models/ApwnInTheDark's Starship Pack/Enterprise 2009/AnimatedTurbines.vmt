@@ -1,0 +1,16 @@
+VertexLitGeneric
+{
+"$basetexture" "models/ApwnInTheDark's Starship Pack/Enterprise 2009/AnimatedTurbines"
+"$alphatest" "1"
+
+"$frame" "10"
+
+"Proxies" 
+{
+"AnimatedTexture" 
+{ 
+"animatedTextureVar" "$basetexture" 
+"animatedTextureFrameNumVar" "$frame" 
+"animatedTextureFrameRate" "45"
+}
+}

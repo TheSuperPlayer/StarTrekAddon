@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Enterprise-E/Type 11 Shuttle/GlowingEngines"
+	
+	"$selfillum" "1"
+	"$SelfIllumMask" "models/ApwnInTheDark's Starship Pack/Enterprise-E/Type 11 Shuttle/Special/GlowingEngines-SelfIllum"
+}

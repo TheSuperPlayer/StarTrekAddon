@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Shared Materials/Joint-Indicator"
+
+	"$SelfIllum" "1"
+}

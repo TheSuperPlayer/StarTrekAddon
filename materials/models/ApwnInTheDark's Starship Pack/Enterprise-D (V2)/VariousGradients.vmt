@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Enterprise-D (V2)/VariousGradients"
+	
+	"$SelfIllum" "1"
+	"$SelfIllumMask" "models/ApwnInTheDark's Starship Pack/Enterprise-D (V2)/Special/VariousGradients-SelfIllum"
+}

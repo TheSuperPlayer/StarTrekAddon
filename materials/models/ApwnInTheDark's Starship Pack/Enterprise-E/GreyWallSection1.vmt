@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Enterprise-E/GreyWallSection1"
+	
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models/ApwnInTheDark's Starship Pack/Enterprise-E/Special/GreyWallSection1-Reflect"
+}

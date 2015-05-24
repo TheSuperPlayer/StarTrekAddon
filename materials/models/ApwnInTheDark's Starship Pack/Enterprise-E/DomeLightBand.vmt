@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Enterprise-E/DomeLightBand"
+	
+	"$selfillum" "1"
+}

@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Alien Ships/RomulanDderidex03+SelfIllum"
+
+	"$BumpMap" "models/ApwnInTheDark's Starship Pack/Alien Ships/Special/RomulanDderidex03-BumpMap+Phong"
+	
+	"$SelfIllum" "1"
+
+	"$Phong" "1"
+	"$PhongExponent" "33"
+	"$phongboost" "10"
+	"$phongfresnelranges"	"[.05 .5 1]"
+}

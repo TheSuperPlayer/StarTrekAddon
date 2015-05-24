@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "Models/ApwnInTheDark's Starship Pack/Type 6 Shuttle/Type6Exterior03+Phong"
+
+	"$Phong" "1"
+	"$basemapalphaphongmask" "1"
+	"$phongexponent" "75"
+	"$PhongBoost" "15"
+	"$PhongFresnelRanges"	"[.05 .5 1]"
+}

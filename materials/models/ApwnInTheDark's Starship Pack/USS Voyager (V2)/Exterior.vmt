@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/Exterior"
+	
+	"$BumpMap" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/Special/Exterior-BumpMap+Phong"
+
+	"$SelfIllum" "1"
+	"$SelfIllumMask" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/Special/Exterior-SelfIllum"
+	
+	"$Phong" "1"
+	"$PhongExponent" "33"
+	"$phongboost" "7.5"
+	"$phongfresnelranges"	"[.05 .5 1]"
+}

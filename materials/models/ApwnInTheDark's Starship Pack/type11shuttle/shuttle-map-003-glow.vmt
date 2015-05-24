@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\type11shuttle\shuttle-map-003-glow"
+	"$surfaceprop" "glass"
+	"$selfillum" "1"
+}

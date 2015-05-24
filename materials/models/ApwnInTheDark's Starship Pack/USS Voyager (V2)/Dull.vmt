@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/Dull"
+	
+	"$SelfIllum" "1"
+	
+	"$EnvMap" "Env_CubeMap"
+	"$EnvMapMask" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/Special/Dull-Reflect"
+}

@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Enterprise 2009/Nacelles+Phong"
+
+	"$SelfIllum" "1"
+	"$SelfIllumMask" "models/ApwnInTheDark's Starship Pack/Enterprise 2009/Special/Nacelles-SelfIllum"
+
+	"$Phong" "1"
+	"$basemapalphaphongmask" "1"
+	"$PhongBoost" "15"
+	"$PhongFresnelRanges"	"[.05 .5 1]"
+}

@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Bird of Prey/KlingonKvort02+SelfIllum"
+
+	"$BumpMap" "models/ApwnInTheDark's Starship Pack/Bird of Prey/Special/KlingonKvort02-BumpMap+Phong"
+	
+	"$SelfIllum" "1"
+
+	"$Phong" "1"
+	"$PhongExponent" "33"
+	"$phongboost" "7.5"
+	"$phongfresnelranges"	"[.05 .5 1]"
+}

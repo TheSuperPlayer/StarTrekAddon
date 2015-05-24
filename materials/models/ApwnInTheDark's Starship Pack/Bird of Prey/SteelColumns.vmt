@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "Models/ApwnInTheDark's Starship Pack/Bird of Prey/SteelColumns"
+	
+	"$EnvMap" "Env_Cubemap"
+	"$EnvMapMask" "Models/ApwnInTheDark's Starship Pack/Bird of Prey/Special/SteelColumns-Reflect"
+}

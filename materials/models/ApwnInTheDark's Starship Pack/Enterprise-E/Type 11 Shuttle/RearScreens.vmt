@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Enterprise-E/Type 11 Shuttle/RearScreens"
+	
+	"$selfillum" "1"
+	"$SelfIllumMask" "models/ApwnInTheDark's Starship Pack/Shared Materials/Special/LCARS-FullSelfIllum"
+
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models/ApwnInTheDark's Starship Pack/Shared Materials/Special/LCARS-FullReflect"
+	
+}

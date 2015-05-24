@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Borg Ships/TacticalArmor2+SelfIllum"
+	
+	"$SelfIllum" "1"
+
+	"$BumpMap" "models/ApwnInTheDark's Starship Pack/Borg Ships/Special/TacticalArmor2-BumpMap+Phong"
+
+	"$Phong" "1"
+	"$PhongBoost" "15"
+	"$PhongFresnelRanges"	"[.05 .5 1]"
+}

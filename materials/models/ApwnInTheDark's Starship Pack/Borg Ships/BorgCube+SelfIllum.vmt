@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Borg Ships/BorgCube+SelfIllum"
+
+	"$SelfIllum" "1"
+}

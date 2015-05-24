@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Enterprise-E/Type 11 Shuttle/MainExterior"
+
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models/ApwnInTheDark's Starship Pack/Enterprise-E/Type 11 Shuttle/Special/MainExterior-Reflect"
+}

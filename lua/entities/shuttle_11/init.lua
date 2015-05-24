@@ -433,7 +433,7 @@ function ENT:Boom()
 			effect:SetNormal( self:GetUp() )
 			util.Effect( "shuttle_boom", effect )
 			self.Entity:Remove();
-			util.BlastDamage( self.Entity, self.Entity, self:GetPos()+Vector(0,0,220), 1000, 120 );
+			--util.BlastDamage( self.Entity, self.Entity, self:GetPos()+Vector(0,0,220), 1000, 120 );
 	end
 
 end

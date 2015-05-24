@@ -51,7 +51,7 @@ net.Receive("Drydock",function(len,ply)
 		RealClass = "shuttle_11"
 	elseif NetClass == "Shuttle Type 9" then
 		RealClass = "shuttle_9"
-	elseif NetClass == "Shuttle Type 16" then
+	elseif NetClass == "Shuttle Type 6" then
 		RealClass = "shuttle_6"
 	end
 	

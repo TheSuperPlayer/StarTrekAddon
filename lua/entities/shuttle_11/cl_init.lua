@@ -20,14 +20,14 @@ surface.CreateFont("STFontSmall", {
 		font = "Arial"})	    
 function ENT:Draw()
 	self.Entity:DrawModel() // Draw the model.
-	local dev=LocalPlayer():GetNetworkedEntity("Shuttle11",LocalPlayer())
+	local dev= self.Entity--LocalPlayer():GetNetworkedEntity("Shuttle11",LocalPlayer())
 	
 	local pos = self.Entity:LocalToWorld(Vector(-149.5, 73, 242));
 	local ang = self.Entity:GetAngles();
 	ang:RotateAroundAxis(ang:Up(), 0)
 	ang:RotateAroundAxis(ang:Forward(),	78.8)
 	local str = "Shuttle Type 11"
-	local Hull  = math.Round(dev:GetNWInt("health")/10000*100)
+	local Hull  = math.Round(dev:GetNWInt("health")/10000*100) -- test fix
 	local Time = string.FormattedTime(os.clock(), "%02i:%02i:%02i")
 	local Timestamp = os.time()
 	local TimeStr = os.date( "%X - %d/%m/%Y" , Timestamp )
@@ -41,9 +41,9 @@ function ENT:Draw()
 			surface.DrawRect(0-1790/2, 0, 1790, 610)
 			surface.SetDrawColor( 255, 80, 0, 255 )
 			surface.DrawRect(0-1790/2, 100, 1790, 50)
-			draw.DrawText(str, "STFontBig", 0, 20, Color(255,255,255,255), TEXT_ALIGN_CENTER )
+			draw.DrawText(str, "SandboxLabel", 0, 20, Color(255,255,255,255), TEXT_ALIGN_CENTER )
 			draw.DrawText("Hull: "..Hull, "ScreenFont1", -600, 300, HullCol, TEXT_ALIGN_CENTER )
-			draw.DrawText(TimeStr, "STFontBig", 600, 600, Color(255,255,255,255), TEXT_ALIGN_CENTER )
+			draw.DrawText(TimeStr, "SandboxLabel", 600, 560, Color(255,255,255,255), TEXT_ALIGN_CENTER )
 		cam.End3D2D()
 
 end    
@@ -104,4 +104,5 @@ local dev=LocalPlayer():GetNetworkedEntity("Shuttle11",LocalPlayer())
 	end
 end
 hook.Add("HUDPaint","Shuttle11HUD",PrintHUD)
+
 

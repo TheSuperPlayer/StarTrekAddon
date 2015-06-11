@@ -291,7 +291,7 @@ function SWEP:Vaporise()
 						timer.Simple(2,function() if(ent:IsValid()) then //ent:Remove() 
 						ent:Kill()
 						end end);
-			else
+			elseif not ent:IsPlayer() and not ent:IsNPC() then
 				local mass = ent:GetPhysicsObject():GetMass()
 				if mass > 150 then
 					return

@@ -41,9 +41,9 @@ function ENT:Draw()
 			surface.DrawRect(0-1790/2, 0, 1790, 610)
 			surface.SetDrawColor( 255, 80, 0, 255 )
 			surface.DrawRect(0-1790/2, 100, 1790, 50)
-			draw.DrawText(str, "SandboxLabel", 0, 20, Color(255,255,255,255), TEXT_ALIGN_CENTER )
+			draw.DrawText(str, "STFontBig", 0, 20, Color(255,255,255,255), TEXT_ALIGN_CENTER )
 			draw.DrawText("Hull: "..Hull, "ScreenFont1", -600, 300, HullCol, TEXT_ALIGN_CENTER )
-			draw.DrawText(TimeStr, "SandboxLabel", 600, 600, Color(255,255,255,255), TEXT_ALIGN_CENTER )
+			draw.DrawText(TimeStr, "STFontBig", 600, 600, Color(255,255,255,255), TEXT_ALIGN_CENTER )
 		cam.End3D2D()
 
 end    

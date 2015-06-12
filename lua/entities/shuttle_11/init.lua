@@ -26,7 +26,7 @@ function ENT:Initialize()
 		if (phys:IsValid()) then
 			phys:SetMass(60000)
 		end
-	self.Entity:SetName("")
+	--self.Entity:SetName("Otto")
 	--print(StarTrek.GetShipName(self.Entity))
 	self.Entity:StartMotionController()
 	self.Entity:GetPhysicsObject():EnableMotion(false)
@@ -82,10 +82,10 @@ function ENT:Initialize()
 */
 end
 
-function ENT:OnTakeDamage(dmg) --########## Darts aren't invincible are they? @RononDex
+function ENT:OnTakeDamage(dmg) 
 	if (GetConVarNumber("STA_TakeDamage") == 1) then
 	local health=self:GetNetworkedInt("health")
-	self:SetNetworkedInt("health",health-dmg:GetDamage()) -- Sets heath(Takes away damage from health)
+	self:SetNetworkedInt("health",health-dmg:GetDamage()) 
 	if dmg:GetDamage() > 2 then
 		self.Entity:EmitSound("console_explo_01.mp3")
 	end
@@ -415,14 +415,13 @@ function ENT:Boom()
 		self.CanExit = false
 		self.EngineOn = false
 		timer.Simple(3.0,function()
-			self:Exit(true);
+			--self:Exit(true);
 			self.Pilot:Kill();
-			self.Entity:Remove();
 			local effect = EffectData()
 			effect:SetOrigin( self:GetPos() )
 			effect:SetNormal( self:GetUp() )
 			util.Effect( "shuttle_boom", effect )
-			
+			self.Entity:Remove();
 			--util.BlastDamage( self.Entity, self.Entity, self:GetPos()+Vector(0,0,220), 1000, 120 );
 		
 		end);
@@ -480,6 +479,7 @@ local phaser = ents.Create("phaser_pulse");
 		util.Effect( "phaserBeam", beameffect )
 --end*/
 end
+
 
 function ENT:Shoot2()
 self.TorpDelay = self.TorpDelay-33

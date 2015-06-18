@@ -1,14 +1,5 @@
 -- Read the weapon_real_base if you really want to know what each action does
-local IonHitImpact = function(attacker, tr, dmginfo)
 
-	local ionhit = EffectData()
-	ionhit:SetOrigin(tr.HitPos)
-	ionhit:SetNormal(tr.HitNormal)
-	ionhit:SetScale(10)
-	util.Effect("phaser_bullethit", ionhit)
-
-	return true
-end
 if (SERVER) then
 	AddCSLuaFile("shared.lua")
 	SWEP.HoldType 		= "ar2"
@@ -22,18 +13,13 @@ if (CLIENT) then
 	SWEP.ViewModelFOV = 65
 	SWEP.DrawCrosshair		= true
 	SWEP.DrawAmmo	 = false
-	killicon.AddFont("weapon_real_cs_ak47", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
 end
 
-SWEP.Base 				= "fo3_stef_base"
-
-SWEP.EjectDelay			= 0.0
 
 SWEP.Instructions 		= " "
 
 SWEP.Category			= "Star Trek"
-SWEP.Author 			= "Crudcakes"	
-SWEP.MuzzleEffect			= "phaser_muzzle" -- This is an extra muzzleflash effect
+SWEP.Author 			= "SuperPlayer"	
 SWEP.Spawnable 			= true
 SWEP.AdminSpawnable 		= true
 SWEP.HoldType 	        	= "ar2"
@@ -52,6 +38,8 @@ SWEP.WorldModel = "models/weapons/w_shotgun.mdl"
 SWEP.ShowViewModel = true
 SWEP.ShowWorldModel = false
 SWEP.UseHands = true
+SWEP.DrawAmmo	= false
+SWEP.DrawCrosshair = true
 SWEP.ViewModelBoneMods = {
 	["ValveBiped.Gun"] = { scale = Vector(0.009, 0.009, 0.009), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0) }
 }
@@ -78,7 +66,6 @@ SWEP.Primary.DefaultClip 	= 100
 SWEP.Primary.MaxAmmo 	= 100;
 SWEP.Primary.Ammo 		= "CombineCannon"
 
---SWEP.Secondary.Sound 		= Sound("weapons/phaser/phaser_stun.wav")
 SWEP.Secondary.ClipSize 	= -1
 SWEP.Secondary.DefaultClip 	= -1
 SWEP.Secondary.Automatic 	= false
@@ -187,7 +174,7 @@ end
 
 function SWEP:Full()
 
-
+	if SERVER then
 	if ( self.Weapon:Clip1() >= 1 ) then //check always if we have ammo
 	self.Weapon:SetNextSecondaryFire( CurTime() + self.Primary.Delay )
 	self.Weapon:SetNextPrimaryFire( CurTime() + 0.2 )
@@ -200,7 +187,7 @@ function SWEP:Full()
 	
 	local shootpos = p:GetShootPos();
 	local e = ents.Create("phaser_pulse");
-	e:PrepareBullet(aimvector, 1, 7000, 2);
+	e:Settings(aimvector, 3000, 50, {10,10});
 	e:SetPos(shootpos);
 	e:SetOwner(p);
 	e.Owner = p;
@@ -211,7 +198,7 @@ function SWEP:Full()
 	
 	self.Weapon:EmitSound(self.Primary.Sound, 150)
 	-- Emit the gun sound when you fire
-	self:RecoilPower()
+	---self:RecoilPower()
 
 	self:TakePrimaryAmmo(1)
 	self.Primary.Damage = 0	
@@ -222,6 +209,7 @@ function SWEP:Full()
 	end
 	else
 	self.Weapon:EmitSound("console/denied01.wav")
+	end
 	end
 end
 
@@ -236,15 +224,21 @@ function SWEP:Vaporise()
 
 	self.Weapon:EmitSound("weapons/phaser_rifle/compfire2.wav", 150)
 	-- Emit the gun sound when you fire
-	self:RecoilPower()	
+	--self:RecoilPower()	
+	
+
+	if SERVER then
+	self:TakePrimaryAmmo(5)
+	self.Primary.Damage = 0
+		
 	local p = self.Owner
 	local aimvector = self.Owner:GetAimVector();
 	local t = util.QuickTrace(self.Owner:GetShootPos(),16*1024*aimvector,filter);
 	
 	
 	local shootpos = p:GetShootPos();
-	local e = ents.Create("phaser_pulse");
-	e:PrepareBullet(aimvector, 1, 6000, 2);
+	local e = ents.Create("phaser_vaporise");
+	e:Settings(aimvector, 3000, 300, {10,10});
 	e:SetPos(shootpos);
 	e:SetOwner(p);
 	e.Owner = p;
@@ -252,68 +246,8 @@ function SWEP:Vaporise()
 	e.Damage = 0;
 	e:Spawn();
 	e:Activate();
-
-	if SERVER then
-	self:TakePrimaryAmmo(5)
-	self.Primary.Damage = 0
-		local trace = {}
-			trace.start = self.Owner:GetShootPos()
-			trace.endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * 10^14
-			trace.filter = self.Owner
-		local tr = util.TraceLine(trace)
-		
-		
-		local ent = tr.Entity
-			if ent:IsWorld() then return end
-			
-			if ent:IsNPC() then
-				ent:StopMoving()
-				ent:SetMaterial("effects/Vaporise_1")
-				ent:SetCollisionGroup(COLLISION_GROUP_WORLD )				
-				local effectdata = EffectData()
-						effectdata:SetEntity(ent)
-						//effectdata:SetStart(self.Entity:GetPos() +  self.Entity:GetUp() * 50)
-						util.Effect( "phaserDis1", effectdata )
-						--ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS);
-						
-						timer.Simple(2,function() if(ent:IsValid()) then //ent:Remove() 
-						ent:Remove()
-						end end);
-			elseif ent:IsPlayer() then
-				ent:Freeze()
-				ent:SetMaterial("effects/Vaporise_1")		
-				local effectdata = EffectData()
-						effectdata:SetEntity(ent)
-						//effectdata:SetStart(self.Entity:GetPos() +  self.Entity:GetUp() * 50)
-						util.Effect( "phaserDis1", effectdata )
-						--ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS);
-						
-						timer.Simple(2,function() if(ent:IsValid()) then //ent:Remove() 
-						ent:Kill()
-						end end);
-			elseif not ent:IsPlayer() and not ent:IsNPC() then
-				local mass = ent:GetPhysicsObject():GetMass()
-				if mass > 150 then
-					return
-				else
-					ent:SetMaterial("effects/Vaporise_1")		
-					ent:GetPhysicsObject():EnableMotion(false)
-					ent:SetCollisionGroup(COLLISION_GROUP_WORLD )
-				local effectdata = EffectData()
-						effectdata:SetEntity(ent)
-						//effectdata:SetStart(self.Entity:GetPos() +  self.Entity:GetUp() * 50)
-						util.Effect( "phaserDis1", effectdata )
-						--ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS);
-						
-						timer.Simple(2,function() if(ent:IsValid()) then //ent:Remove() 
-						ent:Remove()
-						end end);
-				end
-			end		
-				
-		end
-		
 	
+	end
 	
 	if ((game.SinglePlayer() and SERVER) or CLIENT) then
 		self.Weapon:SetNetworkedFloat("LastShootTime", CurTime())
@@ -329,120 +263,15 @@ end
 
 
 
-function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
 
-	numbul 		= 0
-	cone 			= 0
-	
-	local bullet 	= {}
-	bullet.Num  	= numbul
-	bullet.Src 		= self.Owner:GetShootPos()       					-- Source
-	bullet.Dir 		= self.Owner:GetAimVector()      					-- Dir of bullet
-	bullet.Spread 	= Vector(cone, cone, 0)     						-- Aim Cone
-	bullet.Tracer 	= 0
-	//bullet.TracerName = "phaser_bullet"     									-- Show a tracer on every x bullets
-	bullet.Force 	= 2 * dmg     								-- Amount of force to give to phys objects
-	bullet.Damage 	= dmg										-- Amount of damage to give to the bullets
-	--bullet.Callback 	= IonHitImpact
--- 	bullet.Callback	= function ( a, b, c ) BulletPenetration( 0, a, b, c ) end 	-- CALL THE FUNCTION BULLETPENETRATION
-	
-	local dmginfo = DamageInfo();
-		if( dmginfo.SetDamageType ) then
-			dmginfo:SetDamageType( DMG_ENERGYBEAM );
-		end
-
-	self.Owner:FireBullets(bullet)					-- Fire the bullets
-	
-	self.Owner:MuzzleFlash()        					-- Crappy muzzle light
-
-	      			-- 3rd Person Animation
-	
-	local fx 		= EffectData()
-	fx:SetEntity(self.Weapon)
-	fx:SetOrigin(self.Owner:GetShootPos())
-	fx:SetNormal(self.Owner:GetAimVector())
-	fx:SetAttachment(self.MuzzleAttachment)
-	util.Effect(self.MuzzleEffect,fx)					-- Additional muzzle effects
-	
-
-	if ((game.SinglePlayer() and SERVER) or (not game.SinglePlayer() and CLIENT)) then
-		local eyeang = self.Owner:EyeAngles()
-		eyeang.pitch = eyeang.pitch - recoil
-		self.Owner:SetEyeAngles(eyeang)
-					
-	end
-	
-end
-
-
-
-function SWEP:DrawHUD()
-	local smode = "Full Kill"
-	local fm = self:GetNetworkedInt("XMode")
-	local ammo = self.Weapon:Clip1()
-	local z = self:GetNetworkedInt("Zoom")
-	
-	local ammopercent = ammo/100 * 90
-	local ammoPrcnt = (ammo * (90 / self.Primary.MaxAmmo)) //percentage, counting up !
-	local ammoPrcnt2 = ((90 / self.Primary.MaxAmmo)*(ammo-(ammo*2))+90) //reversed percentage, counting down !
-	
-	if SERVER then
-		local trace = {}
+function SWEP:Think()
+	local m = self.SMode
+	local trace = {}
 			trace.start = self.Owner:GetShootPos()
 			trace.endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * 10^14
 			trace.filter = self.Owner
 		local tr = util.TraceLine(trace)
-		self.TraceEnt = tr.Entity
-		
-		if CLIENT then
-		surface.CreateFont("Target", {
-			size = 20, --Size
-			weight = 900, --Boldness
-			antialias = true,
-			shadow = false,
-			font = "Arial"
-		})
-			surface.SetTextColor(255,0,0,255)
-			surface.SetTextPos(ScrW()/2, ScrH()/2)
-			surface.SetFont( "Target" )
-			surface.DrawText ( self.TraceEnt )
-		end
-		
-	end
-		
-	
-	
-	if ammo >= 70 then
-		ammocol = Color(127,255,0,255)
-	elseif ammo < 70 and ammo >= 35 then
-		ammocol = Color(225,255,0,255)
-	elseif ammo < 35 then
-		ammocol = Color(255,0,0,255)
-	end
-	
-	if fm == 1 then
-		smode = "Full Kill"
-	elseif fm == 2 then
-		smode = "Vaporise"
-	end
-	//Target Hud
-	if z == 1 then
-		
-	--surface.CreateFont("Trebuchet24" ,40, 250, false, false,"Target") 
-	
-	--draw.RoundedBox( 0, ScrW()/2, ScrH()/2, 4, 4, Color(255, 0, 0, 100) )
-	end
-	//Ammo Hud
-	draw.RoundedBox( 0, ScrW()/1.155, ScrH()/1.150, 220, 30, Color(100, 100, 100, 255) ) //Function hud
-	draw.RoundedBox( 0, ScrW()/1.155, ScrH()/1.105, 220, 65, Color(255, 92, 0, 255) )	//Ammo hud
-	draw.RoundedBox( 0, ScrW()/1.1825, ScrH()/1.15, 35, 96, Color(0, 0, 0, 255) )	//Design hud
-	draw.RoundedBox( 0, ScrW()/1.176, ScrH()/1.145, 20, ammoPrcnt, ammocol )	//Design hud
-	//draw.WordBox(10,ScrW()/1.155, ScrH()/1.15,"Mode: "..smode,"Default", Color(100, 100, 100, 255), Color(255, 100, 100, 255))
-	draw.SimpleText("Mode: "..smode,"Trebuchet24",ScrW()/1.145, ScrH()/1.147, Color(255, 255, 255, 255),0,0)
-		
-end
-function SWEP:Think()
-	local m = self.SMode
+		self:SetNWEntity("TraceEnt",tr.Entity)
 	if m == 3 then	
 		if self.Owner:GetAmmoCount(self.Primary.Ammo)>=self.AmmoPerUse then
 			if self.Owner:KeyDown (IN_ATTACK) and self.LastSoundRelease + self.RestartDelay < CurTime() then	
@@ -481,6 +310,81 @@ function SWEP:Think()
 	self.Weapon:NextThink(CurTime() + 1)
 	return true
 	
+end
+
+if CLIENT then
+surface.CreateFont("Target", {
+			size = 50, --Size
+			weight = 900, --Boldness
+			antialias = true,
+			shadow = false,
+			font = "Arial"
+		})
+function SWEP:DrawHUD()
+	local smode = "Full Kill"
+	local fm = self:GetNetworkedInt("XMode")
+	local ammo = self.Weapon:Clip1()
+	local z = self:GetNetworkedInt("Zoom")
+	
+	local ammopercent = ammo/100 * 90
+	local ammoPrcnt = (ammo * (90 / self.Primary.MaxAmmo)) //percentage, counting up !
+	local ammoPrcnt2 = ((90 / self.Primary.MaxAmmo)*(ammo-(ammo*2))+90) //reversed percentage, counting down !
+	
+	
+		
+	local Target;
+			Target = self:GetNWEntity("TraceEnt",0)
+	local Text = "World"
+	surface.SetTextColor(255,0,0,255)
+	surface.SetFont( "Target" )
+	if IsValid(Target) then
+		if Target:IsPlayer() then
+			Text = Target:Name()
+		else
+			Text = Target:GetClass()
+		end
+		local w,h = surface.GetTextSize( Text )
+		surface.SetTextPos(ScrW()/2-w/2,ScrH()/2+70)
+	else
+		Text = ""
+		local w,h = surface.GetTextSize( Text )
+		surface.SetTextPos(ScrW()/2-w/2,ScrH()/2+100)
+	end
+	surface.DrawText ( Text )
+		
+	
+		
+	
+	
+	if ammo >= 70 then
+		ammocol = Color(127,255,0,255)
+	elseif ammo < 70 and ammo >= 35 then
+		ammocol = Color(225,255,0,255)
+	elseif ammo < 35 then
+		ammocol = Color(255,0,0,255)
+	end
+	
+	if fm == 1 then
+		smode = "Full Kill"
+	elseif fm == 2 then
+		smode = "Vaporise"
+	end
+	//Target Hud
+	if z == 1 then
+		
+	--surface.CreateFont("Trebuchet24" ,40, 250, false, false,"Target") 
+	
+	--draw.RoundedBox( 0, ScrW()/2, ScrH()/2, 4, 4, Color(255, 0, 0, 100) )
+	end
+	//Ammo Hud
+	draw.RoundedBox( 0, ScrW()/1.155, ScrH()/1.150, 220, 30, Color(100, 100, 100, 255) ) //Function hud
+	draw.RoundedBox( 0, ScrW()/1.155, ScrH()/1.105, 220, 65, Color(255, 92, 0, 255) )	//Ammo hud
+	draw.RoundedBox( 0, ScrW()/1.1825, ScrH()/1.15, 35, 96, Color(0, 0, 0, 255) )	//Design hud
+	draw.RoundedBox( 0, ScrW()/1.176, ScrH()/1.145, 20, ammoPrcnt, ammocol )	//Design hud
+	//draw.WordBox(10,ScrW()/1.155, ScrH()/1.15,"Mode: "..smode,"Default", Color(100, 100, 100, 255), Color(255, 100, 100, 255))
+	draw.SimpleText("Mode: "..smode,"Trebuchet24",ScrW()/1.145, ScrH()/1.147, Color(255, 255, 255, 255),0,0)
+		
+end
 end
 
 /********************************************************

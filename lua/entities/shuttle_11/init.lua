@@ -26,7 +26,7 @@ function ENT:Initialize()
 		if (phys:IsValid()) then
 			phys:SetMass(60000)
 		end
-	--self.Entity:SetName("Otto")
+	self.Entity:SetName("Otto")
 	--print(StarTrek.GetShipName(self.Entity))
 	self.Entity:StartMotionController()
 	self.Entity:GetPhysicsObject():EnableMotion(false)
@@ -444,12 +444,12 @@ function ENT:Shoot1()
 
 
 local phaser = ents.Create("phaser_pulse");
-	phaser:PrepareBullet(self:GetForward()*-1, 0, 12000, 50, {self.Entity});
+	phaser:Settings(self:GetForward()*-1, 12000, 50, {150,120});
 	phaser:SetPos(self.Entity:GetPos()+self.Entity:GetUp()*220);
 	phaser:SetOwner(self);
 	phaser.Owner = self;
 	phaser:Spawn();	
-	phaser.Damage = 140;
+	--phaser.Damage = 140;
 	phaser:Activate();
 	phaser:SetRenderMode(RENDERMODE_TRANSALPHA)
 	phaser:SetColor(Color(255,120,0,255));
@@ -480,36 +480,35 @@ local phaser = ents.Create("phaser_pulse");
 --end*/
 end
 
-
-function ENT:Shoot2()
+function ENT:Shoot2()--180
 self.TorpDelay = self.TorpDelay-33
 self.Pilot:EmitSound("photorp.wav")
 local torp1 = ents.Create("torpedo_pulse");
-	torp1:PrepareBullet(self:GetForward()*-1, 0, 5000, 180, {self.Entity});
+	torp1:Settings(self:GetForward()*-1, 10000, 180, {220,220});
 	torp1:SetPos(self.Entity:GetPos()+self.Entity:GetUp()*220);
 	torp1:SetOwner(self);
 	torp1.Owner = self;
-	torp1:Spawn();
-	torp1.Damage = 240;
+	torp1:Spawn();	
+	--torp1.Damage = 140;
 	torp1:Activate();
 	torp1:SetRenderMode(RENDERMODE_TRANSALPHA)
 	torp1:SetColor(Color(255,0,0,255));
 	
 end
 
-function ENT:Shoot3()
+function ENT:Shoot3()--220
 self.TorpDelay = self.TorpDelay-33
 self.Pilot:EmitSound("quanttorp.mp3")
 local torp2 = ents.Create("torpedo_pulse");
-	torp2:PrepareBullet(self:GetForward()*-1, 0, 4000, 220, {self.Entity});
+	torp2:Settings(self:GetForward()*-1, 8500, 240, {250,250});
 	torp2:SetPos(self.Entity:GetPos()+self.Entity:GetUp()*220);
 	torp2:SetOwner(self);
 	torp2.Owner = self;
-	torp2:Spawn();
-	torp2.Damage = 3100;
+	torp2:Spawn();	
+	--torp2.Damage = 140;
 	torp2:Activate();
 	torp2:SetRenderMode(RENDERMODE_TRANSALPHA)
-	torp2:SetColor(Color(80,100,255,255));
+	torp2:SetColor(Color(0,50,255,255));
 	
 end
 

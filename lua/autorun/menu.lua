@@ -1,6 +1,11 @@
 local TD = CreateClientConVar( "STA_TakeDamage", "1", true, false )
 
-
+function CheckVersion()
+		if (file.Exists("lua/version.lua","GAME")) then
+			local Version = tonumber(file.Read("lua/version.lua","GAME"));
+			return Version
+		end
+end
 
 function TheMenu( Panel )
 	Panel:ClearControls()
@@ -25,6 +30,7 @@ function TheMenu( Panel )
 				Here is some small info:
 				
 				1. The Addon is still in developing if you want to contribute please contact me.
+				2. Download the addon at: https://github.com/TheSuperPlayer/StarTrekAddon
 				
 				Live long and prosper!
 				]]
@@ -41,7 +47,12 @@ function TheMenu( Panel )
 		TakeDamageCB:SizeToContents() -- Make its size to the contents. Duh?
 	Panel:AddItem(TakeDamageCB) 
 	
-	
+	local Version = tostring(CheckVersion())
+	local DVersion = vgui.Create( "DLabel", DermaPanel )
+		DVersion:SetPos( 10, 60 )
+		DVersion:SetText( "Current Version is :"..Version )
+		Panel:AddItem(DVersion) 
+		
 end
 	
 

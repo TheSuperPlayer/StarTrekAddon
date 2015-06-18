@@ -46,7 +46,7 @@ function ENT:PhysicsCollide( data, physobj )
 	local Ent = data.HitEntity;
 		if Ent then
 			local pos = data.HitPos;
-			self:Explode(pos,self.Damage)
+			self:Explode(pos,Ent,self.Damage)
 		end
 end
 function ENT:CAPOnShieldTouch(shield)
@@ -60,10 +60,60 @@ function ENT:CAPOnShieldTouch(shield)
 			util.Effect( "phaser_bullethit", HitEffect )
 	util.BlastDamage(self.Entity, self.Entity:GetOwner(), pos, (self.Size[1]+self.Size[2])/2, self.Damage ) 
 end
-function ENT:Explode(pos,dmg)
+function ENT:Explode(pos,Ent,dmg)
 	local col = self.Entity:GetColor()
 	--print(col.r..col.g..col.b)
 	--print(col.r..col.g..col.b)
+	if Ent:IsNPC() then
+		print("NPC")
+		Ent:StopMoving()
+		Ent:SetMaterial("effects/Vaporise_1")
+		Ent:SetCollisionGroup(COLLISION_GROUP_WORLD )				
+		local effectdata = EffectData()
+			effectdata:SetEntity(Ent)
+			//effectdata:SetStart(self.Entity:GetPos() +  self.Entity:GetUp() * 50)
+			util.Effect( "phaserDis1", effectdata )
+			--ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS);
+						
+		timer.Simple(2,function() if(Ent:IsValid()) then //ent:Remove() 
+			Ent:Remove()
+		end end);
+	
+	elseif Ent:IsPlayer() then
+		print("Player")
+		Ent:Freeze()
+		Ent:SetMaterial("effects/Vaporise_1")		
+		local effectdata = EffectData()
+			effectdata:SetEntity(Ent)
+			//effectdata:SetStart(self.Entity:GetPos() +  self.Entity:GetUp() * 50)
+			util.Effect( "phaserDis1", effectdata )
+			--ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS);
+						
+		timer.Simple(2,function() if(Ent:IsValid()) then //ent:Remove() 
+		Ent:Kill()
+		end end);
+	
+	elseif not Ent:IsPlayer() and not Ent:IsNPC() then
+		print("Props")
+		local mass = Ent:GetPhysicsObject():GetMass()
+		if mass > 150 then
+			--util.BlastDamage(self.Entity, self.Entity:GetOwner(), pos, (self.Size[1]+self.Size[2])*3, dmg/2 ) 
+		else
+			Ent:SetMaterial("effects/Vaporise_1")		
+			Ent:GetPhysicsObject():EnableMotion(false)
+			Ent:SetCollisionGroup(COLLISION_GROUP_WORLD )
+		local effectdata = EffectData()
+			effectdata:SetEntity(Ent)
+			//effectdata:SetStart(self.Entity:GetPos() +  self.Entity:GetUp() * 50)
+			util.Effect( "phaserDis1", effectdata )
+			--ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS);
+			
+			timer.Simple(2,function() if(Ent:IsValid()) then //ent:Remove() 
+			Ent:Remove()
+			end end);
+
+		end
+	end
 	local HitEffect = EffectData()
 			HitEffect:SetOrigin(pos)
 			HitEffect:SetEntity(self.Entity)
@@ -71,7 +121,7 @@ function ENT:Explode(pos,dmg)
 			HitEffect:SetScale((self.Size[1]+self.Size[2])/2)
 			util.Effect( "phaser_bullethit", HitEffect )
 	util.ScreenShake(pos, 10, 5, 1, (self.Size[1]+self.Size[2])*2 )
-	util.BlastDamage(self.Entity, self.Entity:GetOwner(), pos, (self.Size[1]+self.Size[2])*3, dmg ) 
+	
 	self:Remove()
 end
 

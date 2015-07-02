@@ -37,17 +37,18 @@ local function AddFiles2( folder, files )
 		end
 	end
 
+
 function StarTrek.Load()
 	CheckVersion()
 	MsgN("=======================================================");
 	MsgN("Loading Star Trek Addon");
-	MsgN("Current Version: "..StarTrek.Version);
+	--MsgN("Current Version: "..StarTrek.Version);
 	if (StarTrek.Version == nil) then
 		MsgN("Current Version: ERROR");
 	else
 		MsgN("Current Version: "..StarTrek.Version);
 	end
-
+	MsgN("=======================================================");
 	-- Addons check
 
 

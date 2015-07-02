@@ -3,7 +3,7 @@ StarTrek = { }
 
 
 local function CheckVersion()
-	if (file.Exists("lua/cap_ver.lua","GAME")) then
+	if (file.Exists("lua/version.lua","GAME")) then
 		StarTrek.Version = tonumber(file.Read("lua/version.lua","GAME"));
 	end
 end

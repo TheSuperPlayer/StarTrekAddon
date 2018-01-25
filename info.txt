@@ -1,8 +1,8 @@
 "AddonInfo"
 {
 	"name"				"StarTrekAddon"
-	"version"			"1"
-	"up_date"			"19th April 2015"
+	"version"			"2.0"
+	"up_date"			"25.01.2018"
 	"author_name"			"SuperPlayer"
 	"author_email"			"peterotto3475@gmail.com"
 	"author_url"			"None"

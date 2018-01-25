@@ -1,12 +1,37 @@
-Credits go to:
+Made by SuperPlayer
+Copyright[©] 2018 SuperPlayer
+All Rights Reserved
 
->>ApwnInTheDark for the models
->> Crudcakes for creating the phaser base.
->> The CAP Team for the Phaserbullet/Torpedo code
+This code was created by SuperPlayer for the addon "Star Trek Addon" for the game Garry's Mod.
+You may not use this code outside of this addon without written permission by me.
+If you want to use or modify this code, by parts OR as a whole, contact me first.
+Derivative works of this code are not allowed without permission.
+Do NOT distribute copies of this code in any form without permission by me.
+Under NO circumstances are you allowed to use this code to gain any kind of profit.
 
+If I find you breaking any of the statements above, I will take action accordingly.
+
+If you have any inquiries please contact me at:
+peterotto3475@gmail.com
+https://github.com/TheSuperPlayer
 ******************************************************************************************************************
 *                                                                                                                *
 *      If you see some code, textures, models or something else which you made, however i did not credit,        *
 *      please notify me and proper credits will be added.                                                        *
 *                                                                                                                *
 ******************************************************************************************************************
+Code
+    CAP Team
+        - Shield Bullet Logic
+    SuperPlayer
+        - Everything else
+
+Models/Materials
+    ApwnInTheDark
+        - All Star Trek related models & materials
+    SuperPlayer
+        - Everything else
+
+Sounds
+    CBS Studios Inc. and other Star Trek owning associations
+    

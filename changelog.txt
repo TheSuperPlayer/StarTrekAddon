@@ -1,17 +1,31 @@
+Made by SuperPlayer
+Copyright[©] 2018 SuperPlayer
+All Rights Reserved
 
-Version 1.0 (19-05-2015)
------------------------------------------------
--Added Star Trek Type 11 Shuttle
--Added Star Trek Type 6 Shuttle
--Added Star Trek Type 9 Shuttle
--Added Transporter
--Added Star Trek Tab
----Drydock Prototype (May be unstable)
--Added Player Weapons
----Phaser
----Phaser Riffle
----Compression Phaser
----Tricorder
+This code was created by SuperPlayer for the addon "Star Trek Addon" for the game Garry's Mod.
+You may not use this code outside of this addon without written permission by me.
+If you want to use or modify this code, by parts OR as a whole, contact me first.
+Derivative works of this code are not allowed without permission.
+Do NOT distribute copies of this code in any form without permission by me.
+Under NO circumstances are you allowed to use this code to gain any kind of profit.
+
+If I find you breaking any of the statements above, I will take action accordingly.
+
+If you have any inquiries please contact me at:
+peterotto3475@gmail.com
+https://github.com/TheSuperPlayer
 
 
-
+Version 2.0 (25-01-2018)
+    - Projected restarted: All items have been removed and will be re-added when reworked
+    - Shuttle Type 11 added
+        - Reworked flying logic
+        - Reworked HUD
+        - Reworked effects
+        - Added Interior screens + buttons
+        - Animated door
+        - Working shield
+    - Help menu added
+    - GUI Lib Version 1.0 added
+    - Added phaser beam
+    - Added photon torpedo

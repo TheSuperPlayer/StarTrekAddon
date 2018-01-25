@@ -1,7 +1,0 @@
-"VertexLitGeneric"
-{
-	"$basetexture" "Models/ApwnInTheDark's Starship Pack/Bird of Prey/LowerYellowLights02"
-
-	"$SelfIllum" "1"
-	"$SelfIllumMask" "Models/ApwnInTheDark's Starship Pack/Bird of Prey/Special/LowerYellowLights02-SelfIllum"
-}

@@ -1,8 +1,0 @@
-"VertexLitGeneric"
-{
-	"$basetexture" "Models/ApwnInTheDark's Starship Pack/Enterprise-E/ReflectiveAlphatestedNoCullery"
-	
-	"$Alphatest" "1"
-
-	"$NoCull" "1"
-}

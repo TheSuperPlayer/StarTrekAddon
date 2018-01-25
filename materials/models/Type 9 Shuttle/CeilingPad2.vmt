@@ -1,7 +1,0 @@
-"VertexLitGeneric"
-{
-	"$basetexture" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/CeilingPad2"
-	
-	"$SelfIllum" "1"
-	"$SelfIllumMask" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/Special/CeilingPad2-SelfIllum"
-}

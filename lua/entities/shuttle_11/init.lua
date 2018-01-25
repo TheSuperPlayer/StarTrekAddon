@@ -1,42 +1,59 @@
+--[[
+    Made by SuperPlayer
+    Copyright[©] 2018 SuperPlayer
+    All Rights Reserved
+
+    This code was created by SuperPlayer for the addon "Star Trek Addon" for the game Garry's Mod.
+    You may not use this code outside of this addon without written permission by me.
+    If you want to use or modify this code, by parts OR as a whole, contact me first.
+    Derivative works of this code are not allowed without permission.
+    Do NOT distribute copies of this code in any form without permission by me.
+    Under NO circumstances are you allowed to use this code to gain any kind of profit.
+
+    If I find you breaking any of the statements above, I will take action accordingly.
+
+    If you have any inquiries please contact me at:
+    peterotto3475@gmail.com
+    https://github.com/TheSuperPlayer
+]]--
 
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
-util.PrecacheSound("mwc/mwc_on.wav")
-
 include('shared.lua')
 function ENT:SpawnFunction( ply, tr )
 	if ( !tr.Hit ) then return end
 	local ent = ents.Create( "shuttle_11" )
 	ent:SetPos( tr.HitPos + Vector(0,0,-120) )
-	ent:SetAngles(Angle(0,ply:GetAimVector():Angle().Yaw+180,0));
+	ent:SetAngles(Angle(0,ply:GetAimVector():Angle().Yaw+180,0))
 	ent:Spawn()
-	ent:SetVar("Owner",ply);
+	ent:SetVar("Owner",ply)
 	return ent
 end
 
 function ENT:Initialize()
-	self.PositionSet = false;
+	self.PositionSet = false
 	self.Target = Vector(0,0,0)
 	self.Entity:SetModel( "models/type11shuttle/Type11/Type 11 Shuttle.mdl" )
 	self.Entity:PhysicsInit( SOLID_VPHYSICS )
 	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
 	self.Entity:SetSolid( SOLID_VPHYSICS )
-	self.Entity:DrawShadow(true);
+	self.Entity:DrawShadow(true)
 		local phys = self.Entity:GetPhysicsObject()
 		if (phys:IsValid()) then
 			phys:SetMass(60000)
 		end
-	self.Entity:SetName("Otto")
-	--print(StarTrek.GetShipName(self.Entity))
+	self.Entity:SetUseType( SIMPLE_USE )
 	self.Entity:StartMotionController()
 	self.Entity:GetPhysicsObject():EnableMotion(false)
-	self.Accel=0
-	self.EngineOn = true
-	self.DoorOpen = true
+	self.Accel = {F = 0,R = 0,U = 0}
+	self.HoverPos = self.Entity:GetPos()
+	self.DoorOpen = false
 	self.CanExit = true
-	self:SetVar("Owner",ply);
+	self.Owner = self.Entity:GetOwner()
+	self:SetVar("Owner",self.Owner)
 	self.EntHealth = 10000
-	self.TorpDelay = 99
+	self.TorpDelay = 3
+	self.TorpRefreshTime = CurTime()
 	self:SetNetworkedInt("TorpLoad",self.TorpDelay)
 	self.TorpChange = 1
 	self.Torp2Delay = CurTime()
@@ -44,25 +61,28 @@ function ENT:Initialize()
 	self:SetNetworkedInt("phaserCharge",self.PhaserCharge)
 	self.BeamPerson = self:GetOwner()
 	self:SetNetworkedInt("health",self.EntHealth)
+	self.shieldCharge = 5000
+	self:SetNetworkedInt("shieldCharge",self.shieldCharge)
 	self:SetNetworkedEntity("owner",self.Owner)
 	self:SetNetworkedEntity("entity",self.Entity)
+	self.PhaserBeam = nil
 
+	self.ShieldHealth = 1000
+	self.ShieldOn = false
+	self:SetNetworkedBool("shieldOn", self.ShieldOn)
 	self.NextDoorToggle = CurTime()
-	
-	self.HoverPos = self:GetPos();
+	self.TimeSinceFired = CurTime()
 	self.fwd = 0
 	self.right = 0
-	
 	self.WireWarpDest = Vector(0,0,0)
 	
 	if not (WireAddon == nil) then
-		--self.WireDebugName = self.PrintName
 		self.Inputs = Wire_CreateInputs(self.Entity, { "Self Destruct","Beam Up","Beam Down","Warp","Warp Destination [VECTOR]" })
-		self.Outputs = Wire_CreateOutputs(self.Entity, { "Hull", "Output" }) 
+		self.Outputs = Wire_CreateOutputs(self.Entity, { "Hull","Shield" }) 
 	end
 
-	
-		
+	util.AddNetworkString( "ST_Shuttle11_NetHook")
+
 	self.Door = ents.Create("prop_physics")
 		self.Door:SetModel("models/type11shuttle/Door/Door - Type 11 Shuttle.mdl")
 		self.Door:SetPos(self:GetPos()+self:GetForward()*212.4+self:GetUp()*124.7)
@@ -71,201 +91,269 @@ function ENT:Initialize()
 		self.Door:Spawn()
 		self.Door:Activate()
 		self.Door:SetParent(self)
-		--self:SetNetworkedEntity("door",Door)
-	/*self.DoorContr = ents.Create("prop_physics")
-		self.DoorContr:SetModel("models/LCARS/lcars_doorpanel_off.mdl")
-		self.DoorContr:SetPos(self:GetPos()+self:GetForward()*-15+self:GetUp()*225)
-		self.DoorContr:SetAngles(self:GetAngles()+Angle(90,0,0))
-		self.DoorContr:Spawn()
-		self.DoorContr:Activate()
-		self.DoorContr:SetParent(self)
-*/
 end
 
 function ENT:OnTakeDamage(dmg) 
-	if (GetConVarNumber("STA_TakeDamage") == 1) then
 	local health=self:GetNetworkedInt("health")
-	self:SetNetworkedInt("health",health-dmg:GetDamage()) 
-	if dmg:GetDamage() > 2 then
-		self.Entity:EmitSound("console_explo_01.mp3")
+	local maxDmg = dmg:GetDamage()
+	local actualDmg = maxDmg
+	if self.ShieldOn then
+		actualDmg = maxDmg*0.05
+	else
+		actualDmg = maxDmg/2
 	end
-	if((health-dmg:GetDamage())/10000*100<1) then
-		self:Boom() -- Go boom
-	end
+	self:SetNetworkedInt("health",health-actualDmg)
+	if math.Round(self:GetNWInt("health")/10000*100) <=0 then
+		self:SetNetworkedInt("health",0) 
+		self:Boom()
 	end
 end
 
-
-
-function ENT:Use(ply,caller)
-local pos = self:WorldToLocal(ply:GetPos()) - Vector(-220,0,120)
-local pos2 = self:WorldToLocal(ply:GetPos()) - Vector(-15,0,120)
-	if ((pos.x > -20 and pos.x < 30)and(pos.y > -30 and pos.y < 30)and(pos.z > -2 and pos.z < 80)) then
-if not self.In then
-	ply:Spectate( OBS_MODE_ROAMING ) -- OBS_MODE_ROAMING, OBS_MODE_IN_EYE
-	ply:StripWeapons()
-	self.Entity:GetPhysicsObject():Wake()
-	self.Entity:GetPhysicsObject():EnableMotion(true)
-	self.In=true
-	self:SetNetworkedInt("PilotHealth",ply:Health())
-	ply:DrawViewModel(false)
-	ply:DrawWorldModel(false)
-	ply:SetNetworkedBool("isDriveShuttle11",true)
-	ply:SetNetworkedEntity("Shuttle11",self.Entity)
-	--ply:SetViewAngles(self:GetAngles.Pitch,self:GetAngles.Yaw,self:GetAngles.Roll)
-	self.Pilot=ply	
-	self.EngineOn = true
-	self.NextExit = CurTime()+1;
-	end
-	elseif((pos2.x > -20 and pos2.x < 30)and(pos2.y > -30 and pos2.y < 30)and(pos2.z > -2 and pos2.z < 80)and self.NextDoorToggle < CurTime()+2) then
-		if self.DoorOpen == true then
-			self.DoorOpen = false
-			self:CloseDoor()
-			self.NextDoorToggle = CurTime()
-		elseif self.DoorOpen == false then
-			self.DoorOpen = true
-			self:OpenDoor()
-			self.NextDoorToggle = CurTime()
+function ENT:Enter(ply)
+	if not self.In then
+		ply:Spectate( OBS_MODE_ROAMING )
+		ply:StripWeapons()
+		self.Entity:GetPhysicsObject():Wake()
+		self.Entity:GetPhysicsObject():EnableMotion(true)
+		self.In=true
+		self:SetNetworkedInt("PilotHealth",ply:Health())
+		ply:DrawViewModel(false)
+		ply:DrawWorldModel(false)
+		ply:SetNetworkedBool("isDriveShuttle11",true)
+		ply:SetNetworkedEntity("Shuttle11",self.Entity)
+		if self.DoorOpen then
+			self.ToggleDoor()
 		end
+		self.Pilot=ply	
+		self.NextExit = CurTime()+1
+	else
+		ply:ChatPrint(self.Pilot:Name().." is already flying this shuttle!")
 	end
-	
 end
+net.Receive( "ST_Shuttle11_NetHook", function( Len, Ply )
+	local Id = net.ReadUInt(4)
+	local shuttle = net.ReadEntity()
+	if not IsValid(shuttle) or shuttle:GetClass() != "shuttle_11" then return end
+	if Id == 1 then
+		local toEnter = net.ReadEntity()
+		if toEnter != Ply then return end
+		shuttle:Enter(toEnter)
+	elseif Id == 2 then
+		if shuttle.NextDoorToggle < CurTime() and not shuttle.In then shuttle:ToggleDoor() end
+	elseif Id == 3 then
+		shuttle:ToggleShield()
+	elseif Id == 4 then
+		shuttle:EndWarp()
+	end
+end )
 
-function ENT:CloseDoor()
-	--self.Door:SetPos(self:GetPos()+self:GetForward()*212.4+self:GetUp()*124.7)
+function ENT:ToggleDoor(Ply)
+	if not IsValid(self.Door) then return end
+ 	if self.DoorOpen then
+	 	local fx = EffectData()
+		fx:SetScale(1)
+		fx:SetEntity(self.Entity)
+		util.Effect("shuttle11Door", fx, true)
+		self.DoorOpen = false
+		self.Door:SetParent(nil)
+		self.Door:SetPos(self:GetPos()+self:GetForward()*212.4+self:GetUp()*124.7)
 		self.Door:SetAngles(self:GetAngles()+Angle(0,0,0))
-	print("Close")
-end
-
-function ENT:OpenDoor()
-		--self.Door:SetPos(self.Entity:GetPos()+self.Entity:GetForward()*195+self.Entity:GetUp()*90)
+		self.Door:SetParent(self.Entity)
+		timer.Create("shuttle11door_"..self.Entity:EntIndex(), 1.5, 1, function()
+			self.Door:SetNoDraw(false)
+		end)
+	else
+		local fx = EffectData()
+		fx:SetScale(2)
+		fx:SetEntity(self.Entity)
+		util.Effect("shuttle11Door", fx, true)
+		self.DoorOpen = true
+		self.Door:SetParent(nil)
+		self.Door:SetPos(self.Entity:GetPos()+self.Entity:GetForward()*195+self.Entity:GetUp()*90)
 		self.Door:SetAngles(self:GetAngles()+Angle(20,0,0))
-	print("Open")
+		self.Door:SetParent(self.Entity)
+		timer.Create("shuttle11door_"..self.Entity:EntIndex(), 1.5, 1, function()			
+			self.Door:SetNoDraw(false)
+		end)
+	end
+	self.Door:SetNoDraw(true)
+	self.NextDoorToggle = CurTime()+3
 end
 
-function ENT:PhysicsCollide(cdat, phys)
-	if (GetConVarNumber("STA_TakeDamage") == 1) then
-	if cdat.DeltaTime > 0.5 then --0.5 seconds delay between taking physics damage
-		local mass = (cdat.HitEntity:GetClass() == "worldspawn") and 2000 or cdat.HitObject:GetMass(); --if it's worldspawn use 1000 (worldspawns physobj only has mass 1), else normal mass
-		local PysCollDamage = (cdat.Speed*cdat.Speed*math.Clamp(mass, 0, 1000))/9000000
-		self:TakeDamage((cdat.Speed*cdat.Speed*math.Clamp(mass, 0, 1000))/9000000);
-		if PysCollDamage > 100 then 
-			if self.EngineOn then
-			--self.EngineOn = false
-			self.fwd = self.fwd/2
+function ENT:PhysicsCollide(Data, Phys)
+	if Data.DeltaTime > 0.5 then
+		local mass = self.Entity:GetPhysicsObject():GetMass()
+		local hitDamage = Data.Speed / 2
+		if self.ShieldOn and Data.Speed > 100 then
+			self.Entity:TakeShieldDamage(hitDamage*0.2)
+			hitDamage = 0
+			if self.Shield then
+				self.Shield:DrawHit(Data.HitPos,hitDamage)
 			end
+		elseif self.ShieldOn then
+			hitDamage = 0
 		end
-	end
+		self.Entity:TakeDamage(hitDamage, game.GetWorld() , game.GetWorld() )
 	end
 end
-
-
 
 function ENT:OnRemove() 
 	if self.In then
-	self.Pilot:UnSpectate()
-	self.Pilot:DrawViewModel(true)
-	self.Pilot:DrawWorldModel(true)
-	self.Pilot:Spawn()
-	self.Pilot:SetNetworkedBool("isDriveShuttle11",false)
-	self.Pilot:SetPos(self.Entity:GetPos()+Vector(0,0,100))
+		self.Pilot:UnSpectate()
+		self.Pilot:DrawViewModel(true)
+		self.Pilot:DrawWorldModel(true)
+		self.Pilot:Spawn()
+		self.Pilot:SetNetworkedBool("isDriveShuttle11",false)
+		self.Pilot:SetPos(self.Entity:GetPos()+Vector(0,0,100))
 	end
+	if self.transportInProgress then
+		self.Owner:Freeze( false )
+		self.Owner:SetMoveType(MOVETYPE_WALK)
+		self.Owner:SetCollisionGroup(COLLISION_GROUP_NONE )
+	end
+	timer.Remove("shuttle11beam1_"..self.Entity:EntIndex())
+	timer.Remove("shuttle11beam2_"..self.Entity:EntIndex())
+	timer.Remove("ShuttlePhaserHeater_"..self.Entity:EntIndex())
+	timer.Remove("shuttle11door_"..self.Entity:EntIndex())
+
+	if IsValid(self.PhaserBeam) then self.PhaserBeam:Remove() end
+	if IsValid(self.Shield) then self.Shield:Remove() end
 end
 
-
-local ZAxis = Vector(0,0,1);
 function ENT:PhysicsSimulate( phys, deltatime )
-self.Hover = true
-local UP = ZAxis;
-local FWD = self.Entity:GetForward();
-local RIGHT = FWD:Cross(UP):GetNormalized();
-	if self.In and self.EngineOn then
-		if (self.Pilot:KeyDown(IN_FORWARD) and self.Pilot:KeyDown(IN_SPEED) ) then
-            self.fwd=-3000
-			
+	local moveParameters = {}
+	moveParameters.secondstoarrive = 1 // How long it takes to move to pos and rotate accordingly - only if it could move as fast as it want - damping and max speed/angular will make this invalid ( Cannot be 0! Will give errors if you do )
+	moveParameters.maxangular = 5000 //What should be the maximal angular force applied
+	moveParameters.maxangulardamp = 10000 // At which force/speed should it start damping the rotation
+	moveParameters.maxspeed = 1000000 // Maximal linear force applied
+	moveParameters.maxspeeddamp = 10000// Maximal linear force/speed before damping
+	moveParameters.dampfactor = 0.8 // The percentage it should damp the linear/angular force if it reaches it's max amount
+	moveParameters.teleportdistance = 0 // If it's further away than this it'll teleport ( Set to 0 to not teleport )
+	moveParameters.deltatime = deltatime // The deltatime it should use - just use the PhysicsSimulate one
 
-		elseif self.Pilot:KeyDown(IN_BACK) then
-            self.fwd=1500
-			
-
-
-		elseif self.Pilot:KeyDown(IN_FORWARD) then
-            self.fwd=-1500
-
+	local dirFwd = self.Entity:GetForward()*-1
+	local accelFwd = 1500
+	local dirRight = self.Entity:GetRight()*-1
+	local accelRight = 750
+	local dirUp = self.Entity:GetUp()
+	local accelUp = 750
+	local movePos = self.Entity:GetPos()
+	local moveAng = Angle(0,0,0)	
+	
+	if self.In and not self.shouldExit then
+		if self.Pilot:KeyDown(IN_FORWARD) and not self.Pilot:KeyDown(IN_BACK) then
+			self.Accel.F = math.Approach(self.Accel.F, accelFwd, 10)
+		elseif self.Pilot:KeyDown(IN_BACK) and not self.Pilot:KeyDown(IN_FORWARD) then
+			self.Accel.F = math.Approach(self.Accel.F, -accelFwd, 10)
 		else
-		self.fwd = 0
+			self.Accel.F = math.Approach(self.Accel.F, 0, 10)
 		end
-			
-		self.Accel=math.Approach(self.Accel,self.fwd,10)
-		 
-		
-		
-		local move={}
-			move.secondstoarrive	= 1
-			move.pos = self.Entity:GetPos()+self.Entity:GetForward()*self.Accel
-				if self.Pilot:KeyDown( IN_DUCK ) then
-                   move.pos = move.pos+self.Entity:GetUp()*-400
-               elseif self.Pilot:KeyDown( IN_JUMP ) then
-                   move.pos = move.pos+self.Entity:GetUp()*400
-				end
-				
-				if self.Pilot:KeyDown( IN_MOVERIGHT ) then
-					move.pos = move.pos+self.Entity:GetRight()*-450
-				elseif self.Pilot:KeyDown( IN_MOVELEFT ) then
-					move.pos = move.pos+self.Entity:GetRight()*450
-				end
-			local pos = self:GetPos()
-			local aim = self.Pilot:GetAimVector();
-			local ang = aim:Angle();
-			local ExtraRoll = math.Clamp(math.deg(math.asin(self:WorldToLocal(pos + aim).y)),-25,25);
-            			
-			move.maxangular		= 2000
-			move.maxangulardamp	= 10000
-			move.maxspeed			= 1000000
-			move.maxspeeddamp		= 10000
-			move.dampfactor		= 0.7
-			local ang = Angle(-self.Pilot:GetAimVector():Angle().Pitch,self.Pilot:GetAimVector():Angle().Yaw+180,-ExtraRoll/2000*-self.Accel)
-			move.angle			= ang -- Angle(0,180,0)
-			move.deltatime		= deltatime
-			phys:ComputeShadowControl(move)
+
+		if self.Pilot:KeyDown(IN_MOVERIGHT) and not self.Pilot:KeyDown(IN_MOVELEFT) then
+			self.Accel.R = math.Approach(self.Accel.R, accelRight, 10)
+		elseif self.Pilot:KeyDown(IN_MOVELEFT) and not self.Pilot:KeyDown(IN_MOVERIGHT) then
+			self.Accel.R = math.Approach(self.Accel.R, -accelRight, 10)
 		else
-		
+			self.Accel.R = math.Approach(self.Accel.R, 0, 10)
+		end
+
+		if self.Pilot:KeyDown(IN_JUMP) and not self.Pilot:KeyDown(IN_DUCK) then
+			self.Accel.U = math.Approach(self.Accel.U, accelUp, 10)
+		elseif self.Pilot:KeyDown(IN_DUCK) and not self.Pilot:KeyDown(IN_JUMP) then
+			self.Accel.U = math.Approach(self.Accel.U, -accelUp, 10)
+		else
+			self.Accel.U = math.Approach(self.Accel.U, 0, 10)
+		end
+
+		movePos = movePos + (dirFwd*self.Accel.F) + (dirRight*self.Accel.R) + (dirUp*self.Accel.U)
+		local aimVec = self.Pilot:GetAimVector()
+		local pilotAim = aimVec:Angle()
+		local extraRoll = math.Clamp(360+(self.Entity:GetAngles().Yaw - (pilotAim.Yaw+180)),-30,30)*(self.Accel.F/accelFwd)
+		moveAng = Angle(-pilotAim.Pitch,pilotAim.Yaw+180,-extraRoll)
+		moveParameters.pos = movePos
+		moveParameters.angle = moveAng
+
+	else
+		self.Accel = {
+			F = math.Approach(self.Accel.F, 0, 10),
+			R = math.Approach(self.Accel.R, 0, 10),
+			U = math.Approach(self.Accel.U, 0, 10)
+		}	
+		movePos = movePos + (dirFwd*self.Accel.F) + (dirRight*self.Accel.R) + (dirUp*self.Accel.U)
+		if self.Accel.F == 0 and self.Accel.R == 0 and self.Accel.U == 0 then
+			movePos = self.HoverPos
+		end
+		moveParameters.pos = movePos
+		local currentAng = self.Entity:GetAngles()
+		moveAng = Angle(0,currentAng.Yaw,0)
+		moveParameters.angle = moveAng
+	end
+	phys:ComputeShadowControl(moveParameters)
+end
+
+function ENT:Warp()
+	if (util.IsInWorld(self.WireWarpDest)) then
+		self.jumpPoint = self.WireWarpDest
+		self.CanExit = false
+		self.Entity:StopMotionController()
+		self.Entity:GetPhysicsObject():EnableMotion(false)
+		self.Entity:SetNoDraw(true)
+		self.Door:SetNoDraw(true)
+		local WarpOut = EffectData()
+		WarpOut:SetEntity(self.Entity)
+		WarpOut:SetStart(self.jumpPoint + self.Entity:GetForward()*600)
+		util.Effect( "shuttle11_warp", WarpOut )
 	end
 end
 
+function ENT:EndWarp()
+	self.Entity:SetPos(self.jumpPoint)
+	self.HoverPos = self.jumpPoint
+	self.CanExit = true
+	self.Entity:StartMotionController()
+	self.Entity:GetPhysicsObject():EnableMotion(true)
+	self.Entity:GetPhysicsObject():Wake()
+	self.Entity:SetNoDraw(false)
+	self.Door:SetNoDraw(false)
+end
 function ENT:BeamUp()
-	if not self.In then
-		self.Owner:EmitSound("tng_transporter_out.mp3")
+	if self.transportInProgress then return end
+	if not self.In and IsValid(self.Owner) then
+		self.transportInProgress = true
+		self.Owner:EmitSound("beamOutSound.mp3")
 		local dest = self.Entity:GetPos()+self:GetForward()*-45+self:GetUp()*170
 		local fx = EffectData()
-				fx:SetEntity(self.Owner)
-				fx:SetOrigin(self.Owner:GetPos())
-				util.Effect("TransporterBeamOut",fx, true, true );
-				self.Owner:Freeze( true )
-				self.Owner:SetMoveType(MOVETYPE_NOCLIP)
-				self.Owner:SetCollisionGroup(COLLISION_GROUP_WORLD )
-			timer.Simple(3.3,function()
-				self.Owner:EmitSound("tng_transporter_in.mp3")
+			fx:SetEntity(self.Owner)
+			fx:SetOrigin(self.Owner:GetPos())
+			util.Effect("TransporterBeamOut",fx, true, true )
+			self.Owner:Freeze( true )
+			self.Owner:SetMoveType(MOVETYPE_NOCLIP)
+			self.Owner:SetCollisionGroup(COLLISION_GROUP_WORLD )
+			timer.Create("shuttle11beam1_"..self.Entity:EntIndex(), 3.3, 1, function()
+				self.Owner:EmitSound("beamInSound.mp3")
 				self.Owner:SetPos(dest)
 				self.Owner:SetEyeAngles(self.Entity:GetAngles())
 				local fx = EffectData()
 				fx:SetEntity(self.Owner)
 				fx:SetOrigin(self.Owner:GetPos())
-				util.Effect("TransporterBeamIn",fx, true, true );
-					timer.Simple(3,function()
-						self.Owner:Freeze( false )
-						self.Owner:SetMoveType(MOVETYPE_WALK)
-						self.Owner:SetCollisionGroup(COLLISION_GROUP_NONE )
-					end);
-				end);
+				util.Effect("TransporterBeamIn",fx, true, true )
+				timer.Create("shuttle11beam2_"..self.Entity:EntIndex(), 3, 1, function()
+					self.Owner:Freeze( false )
+					self.Owner:SetMoveType(MOVETYPE_WALK)
+					self.Owner:SetCollisionGroup(COLLISION_GROUP_NONE )
+					self.transportInProgress = false
+				end)
+			end)
 	else
 		PrintMessage(HUD_PRINTTALK,"[Shuttle_11]You can't beam while you are flying!")
 	end
 end
 
 function ENT:BeamDown()
-	if not self.In then
-		self.Owner:EmitSound("tng_transporter_out.mp3")
+	if self.transportInProgress then return end
+	if not self.In and IsValid(self.Owner) then
+		self.transportInProgress = true
+		self.Owner:EmitSound("beamOutSound.mp3")
 		local trace = {}
 			trace.start = self.Entity:GetPos()
 			trace.endpos = self.Entity:GetPos()+self:GetForward()*-45+self:GetUp()*-10^14
@@ -275,120 +363,103 @@ function ENT:BeamDown()
 		local fx = EffectData()
 				fx:SetEntity(self.Owner)
 				fx:SetOrigin(self.Owner:GetPos())
-				util.Effect("TransporterBeamOut",fx, true, true );
+				util.Effect("TransporterBeamOut",fx, true, true )
 				self.Owner:Freeze( true )
 				self.Owner:SetMoveType(MOVETYPE_NOCLIP)
-			timer.Simple(3.3,function()
-				self.Owner:EmitSound("tng_transporter_in.mp3")
+				timer.Create("shuttle11beam1_"..self.Entity:EntIndex(), 3.3, 1, function()
+				self.Owner:EmitSound("beamInSound.mp3")
 				self.Owner:SetPos(dest)
 				self.Owner:SetEyeAngles(self.Entity:GetAngles())
 				local fx = EffectData()
 				fx:SetEntity(self.Owner)
 				fx:SetOrigin(self.Owner:GetPos())
-				util.Effect("TransporterBeamIn",fx, true, true );
-					timer.Simple(3,function()
+				util.Effect("TransporterBeamIn",fx, true, true )
+				timer.Create("shuttle11beam2_"..self.Entity:EntIndex(), 3, 1, function()
 						self.Owner:Freeze( false )
 						self.Owner:SetMoveType(MOVETYPE_WALK)
-					end);
-				end);
+						self.transportInProgress = false
+					end)
+				end)
 	else
-		PrintMessage(HUD_PRINTTALK,"[Shuttle_11]You can't beam while you are flying!")
+		self.Pilot:ChatPrint("[Shuttle_11]You can't beam while you are flying!")
 	end
 end
 
 
 function ENT:Exit()
-if self.EngineOn then
-self.Entity:GetPhysicsObject():EnableMotion(false)
-self.Entity:SetAngles(Angle(0,self:GetAngles().Yaw,0))
-			self.Pilot:SetHealth(self:GetNetworkedInt("PilotHealth"))
-			self.Pilot:UnSpectate()
-			self.Pilot:DrawViewModel(true)
-			self.Pilot:DrawWorldModel(true)
-			self.Pilot:Spawn()
-			self.Pilot:SetNetworkedBool("isDriveShuttle11",false)
-			self.Pilot:SetPos(self.Entity:GetPos()+self:GetForward()*-180+self:GetUp()*180)
-			self.In = false
-			self.Accel = 0
-else
-			self.Pilot:SetHealth(self:GetNetworkedInt("PilotHealth"))
-			self.Pilot:UnSpectate()
-			self.Pilot:DrawViewModel(true)
-			self.Pilot:DrawWorldModel(true)
-			self.Pilot:Spawn()
-			self.Pilot:SetNetworkedBool("isDriveShuttle11",false)
-			self.Pilot:SetPos(self.Entity:GetPos()+self:GetForward()*-180+self:GetUp()*180)
-			--self.Pilot:Give("phaser")
-			--self.Pilot:SelectWeapon("phaser")
-			self.In = false
-			self.Accel = 0
-end
-			
+	if IsValid(self.PhaserBeam) then
+		self.PhaserBeam:Remove()
+	end
+	self.Pilot:SetHealth(self:GetNetworkedInt("PilotHealth"))
+	self.Pilot:UnSpectate()
+	self.Pilot:DrawViewModel(true)
+	self.Pilot:DrawWorldModel(true)
+	self.Pilot:Spawn()
+	self.Pilot:SetNetworkedBool("isDriveShuttle11",false)
+	self.Pilot:SetPos(self.Entity:GetPos()+self:GetForward()*-180+self:GetUp()*180)
+	self.In = false
+	self.Accel = {
+	F = 0,
+	R = 0,
+	U = 0
+	}		
+	self.HoverPos = self.Entity:GetPos()
+	self.shouldExit = false
 end
 
 function ENT:LSSupport()
-
-	local ent_pos = self:GetPos();
-
-	if(IsValid(self)) then
-		for _,p in pairs(player.GetAll()) do -- Find all players
-			local pos = (p:GetPos()-ent_pos):Length(); -- Where they are in relation to the jumper
-			if(pos<800 and p.suit) then -- If they're close enough
-				if(not(StarGate.RDThree())) then
-					p.suit.air = 100; -- They get air
-					p.suit.energy = 100; -- and energy
-					p.suit.coolant = 100; -- and coolant
-				else
-					p.suit.air = 200; -- We need double the amount of LS3(No idea why)
-					p.suit.coolant = 200;
-					p.suit.energy = 200;
-				end
-			end
-		end
-	end
+	
 end
 
 function ENT:Think()
 	if (self.In and self.NextExit<CurTime()) then
-	--self.Entity:EmitSound("shuttlecraft/shuttle_interior_loop2.wav")
 		if self.Pilot:KeyDown(IN_USE) then	
 			if self.CanExit then
-				self:Exit(true);
+				self.shouldExit = true
+			end
+		end
+	end
+	if self.In then
+		if self.Pilot:KeyDown(IN_ATTACK) then
+			if self.PhaserCharge > 12 then
+				if not IsValid(self.PhaserBeam) then
+					self:Shoot1()
+				end
+				if not timer.Exists("ShuttlePhaserHeater_"..self.Entity:EntIndex()) then
+					timer.Create( "ShuttlePhaserHeater_"..self.Entity:EntIndex(), 0.1, 0, function() 
+					if self.PhaserCharge > 4 then
+						self.PhaserCharge = self.PhaserCharge - 2
+					else
+						self.PhaserBeam:Remove()
+						self.TimeSinceFired = CurTime()
+						self.PhaserCharge = 0
+						timer.Remove("ShuttlePhaserHeater_"..self.Entity:EntIndex())
+					end
+					end)
+				end
+					
+			end
+		else
+			if IsValid(self.PhaserBeam) then
+				self.PhaserBeam:Remove()
+				if timer.Exists("ShuttlePhaserHeater_"..self.Entity:EntIndex()) then
+					timer.Remove("ShuttlePhaserHeater_"..self.Entity:EntIndex())
+				end
+				self.TimeSinceFired = CurTime()
 			end
 		end
 
-		if self.Pilot:KeyDown(IN_ATTACK) then
-			if (GetConVarNumber("STA_TakeDamage") == 1) then
-			if self.PhaserCharge > 1 then
-				--self:Shoot1();
-				self:Shoot1()
-				self.PhaserCharge = self.PhaserCharge--2.8
-			end
-			else
-			print("You cant shoot with damage disabled")
-			end
-		elseif self.Pilot:KeyDown(IN_ATTACK2) then
-			if (GetConVarNumber("STA_TakeDamage") == 1) then
-			if self.TorpDelay >= 33 and self.Torp2Delay < CurTime() then
-				local torp = math.Round(math.random(1,4))
-					self.Torp2Delay = CurTime()+1
-					if ( torp == 1 or torp == 2 or torp == 3 )then
-						self:Shoot2()
-					elseif torp == 4 then
-						self:Shoot3()
-					end
-			end
-			else
-			print("You cant shoot with damage disabled")
+		if self.In and IsValid(self.Pilot) then
+			self.Pilot:SetPos(self.Entity:GetPos()+self:GetForward()*-180+self:GetUp()*180)
+		end
+
+		if self.Pilot:KeyDown(IN_ATTACK2) then
+			if self.TorpDelay > 0 then
+				self:Shoot2()
 			end
 		end
 		if self.Pilot:KeyDown(IN_RELOAD) then
-			if self.EngineOn then
-				self.EngineOn = false
-				self.fwd = 0
-			else
-				self.EngineOn = true
-			end
+			self:ToggleShield()
 		end
 	end
 	if not (WireAddon == nil) then
@@ -397,189 +468,135 @@ function ENT:Think()
 	if self.HasRD then
 		self:LSSupport()
 	end
-	if self.TorpDelay<100 then
-	self.TorpDelay = self.TorpDelay+1
-	self:SetNetworkedInt("TorpLoad",self.TorpDelay)
+	if self.TorpDelay<3 and self.TorpRefreshTime + 5 < CurTime() then
+		self.TorpDelay = self.TorpDelay+1
+		self.TorpRefreshTime = CurTime()
+		self:SetNetworkedInt("TorpLoad",self.TorpDelay)
 	end
-	if self.PhaserCharge<100 then
-	self.PhaserCharge = self.PhaserCharge+0.7
+	if self.TorpDelay == 3 then
+		self.TorpRefreshTime = CurTime()
+	end
+	if self.PhaserCharge<100 and not IsValid(self.PhaserBeam) and self.TimeSinceFired+2 < CurTime() then
+		self.PhaserCharge = self.PhaserCharge+4
+		if self.PhaserCharge > 100 then self.phaserCharge = 100 end
+	end
 	self:SetNetworkedInt("phaserCharge",self.PhaserCharge)
-	end
 
-	self.Entity:NextThink(CurTime())
+	if self.shieldCharge < 5000 then
+		self.shieldCharge = self.shieldCharge + 5
+		if self.shieldCharge > 5000 then
+			self.shieldCharge = 5000
+		end
+	end
+	self:SetNetworkedInt("shieldCharge", self.shieldCharge)
+
+	if self.shouldExit and self.Accel.F == 0 and self.Accel.R == 0 and self.Accel.U == 0 then
+		self:Exit()
+	end
+	self.Entity:NextThink(CurTime()+0.05)
 end
 
-function ENT:Boom()
-	
-	if self.In then
-		self.CanExit = false
-		self.EngineOn = false
-		timer.Simple(3.0,function()
-			--self:Exit(true);
-			self.Pilot:Kill();
-			local effect = EffectData()
-			effect:SetOrigin( self:GetPos() )
-			effect:SetNormal( self:GetUp() )
-			util.Effect( "shuttle_boom", effect )
-			self.Entity:Remove();
-			--util.BlastDamage( self.Entity, self.Entity, self:GetPos()+Vector(0,0,220), 1000, 120 );
-		
-		end);
-		
-		else
-		local effect = EffectData()
-			effect:SetOrigin( self:GetPos() )
-			effect:SetNormal( self:GetUp() )
-			util.Effect( "shuttle_boom", effect )
-			self.Entity:Remove();
-			--util.BlastDamage( self.Entity, self.Entity, self:GetPos()+Vector(0,0,220), 1000, 120 );
+function ENT:TakeShieldDamage(Dmg)
+	if IsValid(self.Shield) then
+		self.shieldCharge = self.shieldCharge - math.Round(Dmg)
+		if self.shieldCharge <= 0 then
+			self.Shield:Deactivate()
+			self.Shield:Remove()
+			self.ShieldOn = false
+			self.shieldCharge = 0
+		end
+		self:SetNetworkedInt("shieldCharge", self.shieldCharge)
+		self:SetNetworkedBool("shieldOn", self.ShieldOn)
 	end
+end
+function ENT:ToggleShield()
+	if self.ShieldOn == true then
+		self.ShieldOn = false
+		if IsValid(self.Shield) then
+			self.Shield:Deactivate()
+		end
+		self:SetNetworkedBool("shieldOn", self.ShieldOn)
+	else
+		if IsValid(self.Shield) then return end
+		if self.shieldCharge < 500 then return end
+		self.Shield = ents.Create("shield_shuttle_bubble")
+		self.Shield:SetAngles(self.Entity:GetAngles())
+		self.Shield:SetPos( self.Entity:GetPos() + self.Entity:GetUp()*170 )
+		self.Shield:Spawn()
+		self.Shield:SetupProperties(Vector(25,25,15))
+		self.Shield:SetParent(self)
+		self.ShieldOn = true
+		self:SetNetworkedBool("shieldOn", self.ShieldOn)
+	end
+end
 
+
+function ENT:Boom()
+	if IsValid(self.Door) then self.Door:Remove() end
+	if IsValid(self.Shield) then self.Shield:Remove() end
+	self.Entity:NextThink(CurTime()+10)
+	if self.In then
+		if IsValid(self.Pilot) then
+			self:Exit()
+			self.Pilot:Kill()
+		end
+		local effect = EffectData()
+		effect:SetOrigin( self.Entity:GetPos() + self.Entity:GetUp()*230)
+		util.Effect( "shuttle_boom", effect )
+		self:Remove()
+	else
+		local effect = EffectData()
+		effect:SetOrigin( self.Entity:GetPos() + self.Entity:GetUp()*230)
+		util.Effect( "shuttle_boom", effect )
+		self:Remove()
+	end
 end
 
 function ENT:Shoot1()
-	--if self.Pilot:KeyDown(IN_ATTACK) then
-	--print("ok")
-		self.Pilot:EmitSound("pulse_weapons/phaser.mp3")
-
-
-local phaser = ents.Create("phaser_pulse");
-	phaser:Settings(self:GetForward()*-1, 12000, 50, {150,120});
-	phaser:SetPos(self.Entity:GetPos()+self.Entity:GetUp()*220);
-	phaser:SetOwner(self);
-	phaser.Owner = self;
-	phaser:Spawn();	
-	--phaser.Damage = 140;
-	phaser:Activate();
-	phaser:SetRenderMode(RENDERMODE_TRANSALPHA)
-	phaser:SetColor(Color(255,120,0,255));
-
-/*	local trace = {}
-			trace.start = self.Entity:GetPos()+self:GetForward()*-150+self:GetUp()*-180
-			trace.endpos = self.Entity:GetPos()+self:GetForward()*-100000+self:GetUp()*-180
-			trace.filter = self.Entity
-	local tr = util.TraceLine(trace)
-		
-	local beam = ents.Create
-		beam:SetPos(Vector(0,0,0));
-		beam:SetAngles(self.Entity:GetAngles())
-		beam:SetOwner(self.Entity:GetOwner());
-		beam:SetVar("Owner", self.Entity:GetVar("Owner", nil));
-		beam:SetKeyValue("width", "5000");
-		beam:SetKeyValue("damage", 10000);
-		beam:SetKeyValue("dissolvetype", "0");
-		beam:Spawn();
-		beam:SetParent(self.Entity);
-		beam:SetTrigger(true)
-		--return beam;
-	
-	local beameffect = EffectData()
-		beameffect:SetStart(self.Entity:GetPos()+self:GetForward()*-150+self:GetUp()*180)
-		beameffect:SetOrigin(tr.HitPos )
-		util.Effect( "phaserBeam", beameffect )
---end*/
+	if not IsValid(self.PhaserBeam) then
+		self.PhaserBeam = ents.Create("phaser_beam_shuttle")
+		self.PhaserBeam:SetPos(self.Entity:GetPos())
+		self.PhaserBeam:Spawn()
+		self.PhaserBeam:Activate()
+		self.PhaserBeam:Setup(self.Entity,20,60)
+		self.PhaserBeam:SetParent(self.Entity)
+	end
 end
 
-function ENT:Shoot2()--180
-self.TorpDelay = self.TorpDelay-33
-self.Pilot:EmitSound("photorp.wav")
-local torp1 = ents.Create("torpedo_pulse");
-	torp1:Settings(self:GetForward()*-1, 10000, 180, {220,220});
-	torp1:SetPos(self.Entity:GetPos()+self.Entity:GetUp()*220);
-	torp1:SetOwner(self);
-	torp1.Owner = self;
-	torp1:Spawn();	
-	--torp1.Damage = 140;
-	torp1:Activate();
-	torp1:SetRenderMode(RENDERMODE_TRANSALPHA)
-	torp1:SetColor(Color(255,0,0,255));
-	
-end
-
-function ENT:Shoot3()--220
-self.TorpDelay = self.TorpDelay-33
-self.Pilot:EmitSound("quanttorp.mp3")
-local torp2 = ents.Create("torpedo_pulse");
-	torp2:Settings(self:GetForward()*-1, 8500, 240, {250,250});
-	torp2:SetPos(self.Entity:GetPos()+self.Entity:GetUp()*220);
-	torp2:SetOwner(self);
-	torp2.Owner = self;
-	torp2:Spawn();	
-	--torp2.Damage = 140;
-	torp2:Activate();
-	torp2:SetRenderMode(RENDERMODE_TRANSALPHA)
-	torp2:SetColor(Color(0,50,255,255));
-	
-end
-
-
-
-function ENT:Warp()
-	if (self.In) then 
-		if (util.IsInWorld(self.WireWarpDest)) then
-			self.CanExit = false
-			self.Entity:GetPhysicsObject():EnableMotion(false)
-			self.EngineOn = false
-			self.fwd = 0
-			self.Owner:EmitSound("shuttlecraft/transwarp.mp3")
-			self.Entity:EmitSound("shuttlecraft/transwarp.mp3")
-			local WarpOut = EffectData()
-				WarpOut:SetEntity(self.Entity)
-				util.Effect( "shuttle11_warp", WarpOut )
-				
-			timer.Simple(3.0,function()
-				self.Entity:SetMaterial("models/props_combine/portalball001_sheet")
-				self.Door:SetMaterial("models/props_combine/portalball001_sheet")
-				--DoorContr:SetMaterial("models/props_combine/portalball001_sheet")
-					timer.Simple(0.5,function()
-						self.Entity:SetPos(self.WireWarpDest)
-							timer.Simple(0.5,function()
-							self.Entity:SetMaterial(nil)
-							self.Door:SetMaterial(nil)
-							--DoorContr:SetMaterial(nil)
-							self.Entity:GetPhysicsObject():Wake()
-							self.Entity:GetPhysicsObject():EnableMotion(true)
-							self.EngineOn = true
-							self.CanExit = true
-							end);
-					end);
-						
-			end);
-			
-				
-			
-		else
-			PrintMessage(HUD_PRINTTALK,"[Shuttle_11]You can't warp to these coordinates!")
-		end
-	
-	else
-	PrintMessage(HUD_PRINTTALK,"[Shuttle_11]You can't warp without flying!")
-end
+function ENT:Shoot2()
+	self.TorpDelay = self.TorpDelay-1
+	self:SetNetworkedInt("TorpLoad",self.TorpDelay)
+	self.Entity:EmitSound("photonTorpedoSound.wav")
+	--self.Pilot:EmitSound("photonTorpedoSound.mp3")
+	local torp1 = ents.Create("torpedo_pulse")
+	torp1:SetPos(self.Entity:GetPos()+ self.Entity:GetUp()*190 + self.Entity:GetForward()*-360)
+	torp1:SetOwner(self.Entity:GetOwner())
+	torp1.FiredFrom = self.Entity
+	torp1:Spawn()
+	torp1:Settings(self:GetForward()*-1, 1500, 350, Vector(20,20,20))
+	torp1:Activate()
 end
 
 function ENT:TriggerInput(k,v)
 	if(k=="Self Destruct") then
 		if v == 1 then
-		self:Boom()
+			self:Boom()
 		end
 	elseif(k=="Beam Up") then
 		if v == 1 then
-		self:BeamUp()
-		self.Owner:EmitSound("stpack/com_one2beam.wav")
+			self:BeamUp()
 		end
 	elseif(k=="Beam Down") then
 		if v == 1 then
 		self:BeamDown()
-		self.Owner:EmitSound("stpack/com_hail.wav")
 		end
 	elseif(k=="Warp") then
 		if v == 1 then
-		self:Warp()
+			self:Warp()
 		end
 	elseif(k=="Warp Destination") then
-		self.WireWarpDest = v;
-		self.WarpDest = true;
-	
+		self.WireWarpDest = v
+		self.WarpDest = true
 	end
 		
 end	
@@ -587,7 +604,6 @@ end
 function ENT:TriggerOutput()
 	if WireLib then
 		WireLib.TriggerOutput( self.Entity, "Hull", self:GetNetworkedInt("health")/10000*100)
+		WireLib.TriggerOutput( self.Entity, "Shield", self.shieldCharge)
 	end
 end
-
-

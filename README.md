@@ -1,6 +1,7 @@
 # StarTrekAddon
-This is a Star Trek Addon for Garry's Mod.
-At this moment it is beta status. The only finished object is the Transporter.
-If you want to contribute to the addon contact me.
-If you find any bugs please report them to me.
-Have fun playing this.
+
+This is a Star Trek themed addon for Garry's Mod.
+If you have any suggestions or want to help with it, feel free to contact me.
+
+I am not endorsed, sponsored or affiliated with CBS Studios Inc. or the Star Trek franchise.
+All STAR TREK trademarks and logos are owned by CBS Studios Inc.

@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture"	"effects/torpedo_photon"
+	"$selfillum"	"1"
+	"$additive"	"1"
+}

@@ -1,7 +1,0 @@
-"VertexLitGeneric"
-{
-	"$basetexture" "models/ApwnInTheDark's Starship Pack/Shared Materials/TheBlueThing"
-	
-	"$SelfIllum" "1"
-	"$SelfIllumMask" "models/ApwnInTheDark's Starship Pack/Shared Materials/Special/TheBlueThing-SelfIllum"
-}

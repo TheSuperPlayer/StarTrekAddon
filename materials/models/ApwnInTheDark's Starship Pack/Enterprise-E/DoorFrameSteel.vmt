@@ -1,7 +1,0 @@
-"VertexLitGeneric"
-{
-	"$basetexture" "models/ApwnInTheDark's Starship Pack/Enterprise-E/DoorFrameSteel"
-	
-	"$envmap" "env_cubemap"
-	"$envmapmask" "models/ApwnInTheDark's Starship Pack/Enterprise-E/Special/DoorFrameSteel-Reflect"
-}

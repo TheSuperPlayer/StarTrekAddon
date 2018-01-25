@@ -1,124 +1,104 @@
+--[[
+    Made by SuperPlayer
+    Copyright[©] 2018 SuperPlayer
+    All Rights Reserved
+
+    This code was created by SuperPlayer for the addon "Star Trek Addon" for the game Garry's Mod.
+    You may not use this code outside of this addon without written permission by me.
+    If you want to use or modify this code, by parts OR as a whole, contact me first.
+    Derivative works of this code are not allowed without permission.
+    Do NOT distribute copies of this code in any form without permission by me.
+    Under NO circumstances are you allowed to use this code to gain any kind of profit.
+
+    If I find you breaking any of the statements above, I will take action accordingly.
+
+    If you have any inquiries please contact me at:
+    peterotto3475@gmail.com
+    https://github.com/TheSuperPlayer
+]]--
 ENT.Type = "anim"
 ENT.Base = "base_anim"
+ENT.PrintName	= "Photon Torpedo"
+ENT.Author		= "SuperPlayer"
+ENT.Category 	= "Star Trek"
+ENT.Contact		= "peterotto3475@gmail.com"
+ENT.Purpose		= "Destruction"
+
 
 if SERVER then
+    AddCSLuaFile()
+    function ENT:Initialize()
+        self.Entity:PhysicsInitSphere(10, "metal")
+        self.Entity:SetCollisionBounds(Vector(1, 1, 1) * -5, Vector(1, 1, 1) * 5)
+        self.Entity:PhysicsInit(SOLID_VPHYSICS)
+        self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
+        self.Entity:SetSolid(SOLID_VPHYSICS)
+        self:DrawShadow(false)
+        self.KillTheCat = false
+    end
 
+    function ENT:UpdateTransmitState()
+        return TRANSMIT_ALWAYS
+    end
 
-AddCSLuaFile();
+    function ENT:Settings(dir, spd, dmg, size)
+        self.Direction = dir
+        self.Speed = spd
+        self.Damage = dmg
+        self.Size = size
+        self:SetNetworkedVector("Size", size)
 
---################# SENT CODE ###############
+        self:PhysWake()
+        self.Phys = self.Entity:GetPhysicsObject()
+        local vel = self.Direction * self.Speed
+        if (self.Phys and self.Phys:IsValid()) then
+            self.Phys:SetMass((self.Size.x + self.Size.y + self.Size.z) * 10)
+            self.Phys:EnableGravity(false)
+            self.Phys:SetVelocity(vel)
+        end
+    end
+    function ENT:Think(ply)
+        if self.KillTheCat then self:Remove() end
+        if IsValid(self.Phys) then
+            self.Phys:Wake()
+        end
+    end
 
---###################
-function ENT:Initialize()
-	self.Entity:PhysicsInitSphere(10,"metal");
-	self.Entity:SetCollisionBounds(Vector(1,1,1)*-5,Vector(1,1,1)*5);
-	self.Entity:PhysicsInit(SOLID_VPHYSICS);
-	self.Entity:SetMoveType(MOVETYPE_VPHYSICS);
-	self.Entity:SetSolid(SOLID_VPHYSICS);
-	self:DrawShadow(false)
-	
-	self:PhysWake()
-	self.Phys = self.Entity:GetPhysicsObject();
-	local vel = self.Direction*self.Speed;
-	if(self.Phys and self.Phys:IsValid()) then
-		self.Phys:SetMass((self.Size[1]+self.Size[2])*10);
-		self.Phys:EnableGravity(false);
-		self.Phys:SetVelocity(vel);-- end
-	end
-	
-end
-
-function ENT:UpdateTransmitState() return TRANSMIT_ALWAYS end;
-
-function ENT:Settings(dir,spd,dmg,size)
-	self.Direction = dir;
-	self.Speed = spd;
-	self.Damage = dmg;
-	self.Size = size;
-	self.Entity:SetNetworkedVector("Size", Vector(size[1],size[2],0));
-end
-function ENT:Think(ply)
-	local phys = self:GetPhysicsObject();
-	if IsValid(phys) then phys:Wake(); end
-end
-
-function ENT:PhysicsCollide( data, physobj )
-	local Ent = data.HitEntity;
-		if Ent then
-			local pos = data.HitPos;
-			self:Explode(pos,self.Damage)
-		end
-end
-function ENT:CAPOnShieldTouch(shield)
-	self:Remove()
-end
-function ENT:Explode(pos,dmg)
-	local col = self.Entity:GetColor()
-	--print(col.r..col.g..col.b)
-	--print(col.r..col.g..col.b)
-	local HitEffect = EffectData()
-			HitEffect:SetOrigin(pos)
-			HitEffect:SetEntity(self.Entity)
-			HitEffect:SetAngles(Angle(col.r,col.g,col.b))
-			HitEffect:SetScale((self.Size[1]+self.Size[2])/2)
-			util.Effect( "phaser_bullethit", HitEffect )
-	util.ScreenShake(pos, 10, 5, 1, (self.Size[1]+self.Size[2])*2 )
-	util.BlastDamage(self.Entity, self.Entity:GetOwner(), pos, (self.Size[1]+self.Size[2])*3, dmg ) 
-	self:Remove()
-end
-
+    function ENT:PhysicsCollide(data, physobj)
+        local pos = data.HitPos
+        self:Explode(pos, self.Damage)
+        self.KillTheCat = true
+    end
+    function ENT:CAPOnShieldTouch(shield)
+        if shield:GetParent() == self.FiredFrom then return end
+        self:Explode(self:GetPos(), self.Damage)
+        self.KillTheCat = true
+    end
+    function ENT:Explode(pos, dmg)
+        self.Phys:Sleep()
+        local HitEffect = EffectData()
+        HitEffect:SetOrigin(pos)
+        HitEffect:SetEntity(self.Entity)
+        util.Effect("torpedo_photon_hit", HitEffect)
+        util.ScreenShake(pos, 10, 5, 1, 70)
+        util.BlastDamage(self.Entity, self.Entity, pos, (self.Size.x +self.Size.y), dmg)
+    end
 end
 if CLIENT then
+    function ENT:Initialize()
+        local size = self:GetNetworkedVector("Size", Vector(3,3,3))
+        self.Size = size
+        self.Mat = Material("effects/torpedo_photon")
+    end
 
-ENT.Mat = Material("decals/weapons/phaser_bullet")
+    function ENT:Draw()
+        local start = self.Entity:GetPos()
+        render.SetMaterial(self.Mat)
+        render.DrawSprite(start, 70, 70, Color(255,0,0))
+    end
 
-ENT.RenderGroup = RENDERGROUP_BOTH;
-
-
-function ENT:Initialize()
-	local size = self.Entity:GetNetworkedVector("Size", 0);
-	self.Sizes={size.x,size.y,0}; 
-	
-end
-
-
-function ENT:Draw()
-	local start = self.Entity:GetPos();
-	local color = self.Entity:GetColor();
-	
-	render.SetMaterial(self.Mat);
-	for i =1,2 do
-		render.DrawSprite(
-			start,
-			self.Sizes[1],self.Sizes[2],
-			color
-		);
-	end
-end
-
---################### 
-function ENT:Think()
-		local size = self.Entity:GetNetworkedVector("Size", 0);
-		--print(size)
-		self.Sizes={size.x,size.y,0}; 
-		--print(size.x)
-		local color = self.Entity:GetColor();
-		local r,g,b = color.r,color.g,color.b;
-		local dlight = DynamicLight(self:EntIndex());
-		if(dlight) then
-			dlight.Pos = self.Entity:GetPos();
-			dlight.r = r;
-			dlight.g = g;
-			dlight.b = b;
-			dlight.Brightness = 1;
-			dlight.Decay = 300;
-			dlight.Size = 300;
-			dlight.DieTime = CurTime()+0.5;
-	
-	end
-	local time = CurTime();	
-	self.Entity:NextThink(time);
-	return true;
-end
-
+    function ENT:Think()
+        self.Size = self:GetNetworkedVector("Size", Vector(3,3,3))
+        return true
+    end
 end

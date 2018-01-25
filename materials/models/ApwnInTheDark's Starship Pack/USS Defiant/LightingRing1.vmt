@@ -1,7 +1,0 @@
-"VertexLitGeneric"
-{
-	"$basetexture" "models/ApwnInTheDark's StarShip Pack/USS Defiant/LightingRing1"
-	
-	"$SelfIllum" "1"
-	"$SelfIllumMask" "models/ApwnInTheDark's StarShip Pack/USS Defiant/Special/LightingRing1-SelfIllum"
-}

@@ -1,7 +1,0 @@
-"VertexLitGeneric"
-{
-	"$basetexture" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/MetalShutters"
-	
-	"$EnvMap" "Env_CubeMap"
-	"$EnvMapMask" "Models/ApwnInTheDark's Starship Pack/USS Voyager (V2)/Special/MetalShutters-Reflect"
-}

@@ -1,7 +1,0 @@
-"VertexLitGeneric"
-{
-	"$basetexture" "models/ApwnInTheDark's StarShip Pack/USS Defiant/Doorframe+Reflection"
-	
-	"$Envmap" "Env_Cubemap"
-	"$BaseAlphaEnvMapMask" "1"
-}

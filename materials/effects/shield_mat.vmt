@@ -1,0 +1,22 @@
+"UnlitGeneric"
+{
+	"$basetexture" "effects/shield_mat"
+	"$selfillum"	"1"
+	"$additive"	"1"
+	"Proxies"
+	{
+		"TextureScroll"
+		{
+			"texturescrollvar"	"$baseTextureTransform"
+			"texturescrollrate"	1
+			"texturescrollangle" 180
+		}
+		Sine
+		{
+			resultVar	$alpha
+			sineperiod	0.1
+			sinemin		0.7
+			sinemax		1
+		}
+	}
+}

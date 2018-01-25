@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture"	"effects/phaser_beam_orange"
+	"$selfillum"	"1"
+	"$additive"	"1"
+}

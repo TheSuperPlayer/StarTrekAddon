@@ -1,7 +1,0 @@
-"VertexLitGeneric"
-{
-	"$basetexture" "models/ApwnInTheDark's StarShip Pack/USS Defiant/MainColumnFace"
-		
-	"$envmap" "env_cubemap"
-	"$envmapmask" "models/ApwnInTheDark's StarShip Pack/USS Defiant/Special/MainColumnFace-Reflect"
-}

@@ -1,5 +1,0 @@
-"VertexLitGeneric"
-{
-	"$basetexture" "models\storage\metalPipe"
-	$surfaceprop "solidmetal"
-}

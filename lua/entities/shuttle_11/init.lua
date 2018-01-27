@@ -80,9 +80,7 @@ function ENT:Initialize()
 		self.Inputs = Wire_CreateInputs(self.Entity, { "Self Destruct","Beam Up","Beam Down","Warp","Warp Destination [VECTOR]" })
 		self.Outputs = Wire_CreateOutputs(self.Entity, { "Hull","Shield" }) 
 	end
-
-	util.AddNetworkString( "ST_Shuttle11_NetHook")
-
+	
 	self.Door = ents.Create("prop_physics")
 		self.Door:SetModel("models/type11shuttle/Door/Door - Type 11 Shuttle.mdl")
 		self.Door:SetPos(self:GetPos()+self:GetForward()*212.4+self:GetUp()*124.7)
@@ -122,7 +120,7 @@ function ENT:Enter(ply)
 		ply:SetNetworkedBool("isDriveShuttle11",true)
 		ply:SetNetworkedEntity("Shuttle11",self.Entity)
 		if self.DoorOpen then
-			self.ToggleDoor()
+			self:ToggleDoor()
 		end
 		self.Pilot=ply	
 		self.NextExit = CurTime()+1
@@ -464,9 +462,6 @@ function ENT:Think()
 	end
 	if not (WireAddon == nil) then
 		self:TriggerOutput()
-	end
-	if self.HasRD then
-		self:LSSupport()
 	end
 	if self.TorpDelay<3 and self.TorpRefreshTime + 5 < CurTime() then
 		self.TorpDelay = self.TorpDelay+1

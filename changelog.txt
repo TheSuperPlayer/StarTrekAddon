@@ -15,7 +15,12 @@ If you have any inquiries please contact me at:
 peterotto3475@gmail.com
 https://github.com/TheSuperPlayer
 
-
+Version 2.0.1 (27-01-2018)
+	- Fix for
+		- Net error
+		- Door not working
+		- Nil error
+		
 Version 2.0 (25-01-2018)
     - Projected restarted: All items have been removed and will be re-added when reworked
     - Shuttle Type 11 added

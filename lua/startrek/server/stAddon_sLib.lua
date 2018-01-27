@@ -52,3 +52,5 @@ end)
 hook.Add("PhysgunPickup", "ST_DisablePickup", function(Ply, Ent)
 	if Ent.ST_DisablePickup then return false end
 end)
+
+util.AddNetworkString( "ST_Shuttle11_NetHook")

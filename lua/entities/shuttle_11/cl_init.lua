@@ -69,7 +69,7 @@ function ENT:EndWarp()
 end
 function ENT:Draw()
 	self.Entity:DrawModel() // Draw the model.
-	local shuttle= self.Entity--LocalPlayer():GetNetworkedEntity("Shuttle11",LocalPlayer())
+	local shuttle= self.Entity--LocalPlayer():GetNWEntity("Shuttle11",LocalPlayer())
 	
 	local pos = self.Entity:LocalToWorld(Vector(-149.5, 73, 242))
 	local ang = self.Entity:GetAngles()
@@ -78,7 +78,7 @@ function ENT:Draw()
 	local str = "Shuttle Type 11"
 	local Hull  = math.Round(shuttle:GetNWInt("health")/10000*100)
 	local shieldCharge  = shuttle:GetNWInt("shieldCharge")
-	local shieldOn  = shuttle:GetNetworkedBool("shieldOn")
+	local shieldOn  = shuttle:GetNWBool("shieldOn")
 	shieldCharge = math.Round(shieldCharge/5000 * 100)
 	local Time = string.FormattedTime(os.clock(), "%02i:%02i:%02i")
 	local Timestamp = os.time()
@@ -217,10 +217,10 @@ function ENT:Draw()
 end    
 
 function ViewPoint( ply, origin, angles, fov )
-	local shuttle=LocalPlayer():GetNetworkedEntity("Shuttle11",LocalPlayer())
+	local shuttle=LocalPlayer():GetNWEntity("Shuttle11",LocalPlayer())
 	local dist= -1000
 	local add=Vector(0,0,300)
-	if LocalPlayer():GetNetworkedBool("isDriveShuttle11",false) and shuttle~=LocalPlayer() and IsValid(shuttle) then
+	if LocalPlayer():GetNWBool("isDriveShuttle11",false) and shuttle~=LocalPlayer() and IsValid(shuttle) then
 		local view = {}
 		local inWarp = shuttle.inWarp
 		local warpEnd = shuttle.warpEnd
@@ -243,8 +243,8 @@ end
 hook.Add("CalcView", "Shuttle11View", ViewPoint)
 
 function PrintHUD()
-	local shuttle=LocalPlayer():GetNetworkedEntity("Shuttle11",LocalPlayer())
-	if LocalPlayer():GetNetworkedBool("isDriveShuttle11",false) and shuttle~=LocalPlayer() and IsValid(shuttle) then
+	local shuttle=LocalPlayer():GetNWEntity("Shuttle11",LocalPlayer())
+	if LocalPlayer():GetNWBool("isDriveShuttle11",false) and shuttle~=LocalPlayer() and IsValid(shuttle) then
 			local Hull = math.Round(shuttle:GetNWInt("health")/10000*100)
 			local TorpType = shuttle:GetNWInt("TorpType")
 			local TorpLoad = shuttle:GetNWInt("TorpLoad")

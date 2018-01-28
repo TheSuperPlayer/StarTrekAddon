@@ -54,23 +54,23 @@ function ENT:Initialize()
 	self.EntHealth = 10000
 	self.TorpDelay = 3
 	self.TorpRefreshTime = CurTime()
-	self:SetNetworkedInt("TorpLoad",self.TorpDelay)
+	self:SetNWInt("TorpLoad",self.TorpDelay)
 	self.TorpChange = 1
 	self.Torp2Delay = CurTime()
 	self.PhaserCharge = 100
-	self:SetNetworkedInt("phaserCharge",self.PhaserCharge)
+	self:SetNWInt("phaserCharge",self.PhaserCharge)
 	self.BeamPerson = self:GetOwner()
-	self:SetNetworkedInt("health",self.EntHealth)
+	self:SetNWInt("health",self.EntHealth)
 	self.shieldCharge = 5000
-	self:SetNetworkedInt("shieldCharge",self.shieldCharge)
+	self:SetNWInt("shieldCharge",self.shieldCharge)
 	self.lastShieldToggle = CurTime()
-	self:SetNetworkedEntity("owner",self.Owner)
-	self:SetNetworkedEntity("entity",self.Entity)
+	self:SetNWEntity("owner",self.Owner)
+	self:SetNWEntity("entity",self.Entity)
 	self.PhaserBeam = nil
 
 	self.ShieldHealth = 1000
 	self.ShieldOn = false
-	self:SetNetworkedBool("shieldOn", self.ShieldOn)
+	self:SetNWBool("shieldOn", self.ShieldOn)
 	self.NextDoorToggle = CurTime()
 	self.TimeSinceFired = CurTime()
 	self.fwd = 0
@@ -93,7 +93,7 @@ function ENT:Initialize()
 end
 
 function ENT:OnTakeDamage(dmg) 
-	local health=self:GetNetworkedInt("health")
+	local health=self:GetNWInt("health")
 	local maxDmg = dmg:GetDamage()
 	local actualDmg = maxDmg
 	if self.ShieldOn then
@@ -101,9 +101,9 @@ function ENT:OnTakeDamage(dmg)
 	else
 		actualDmg = maxDmg/2
 	end
-	self:SetNetworkedInt("health",health-actualDmg)
+	self:SetNWInt("health",health-actualDmg)
 	if math.Round(self:GetNWInt("health")/10000*100) <=0 then
-		self:SetNetworkedInt("health",0) 
+		self:SetNWInt("health",0) 
 		self:Boom()
 	end
 end
@@ -115,11 +115,11 @@ function ENT:Enter(ply)
 		self.Entity:GetPhysicsObject():Wake()
 		self.Entity:GetPhysicsObject():EnableMotion(true)
 		self.In=true
-		self:SetNetworkedInt("PilotHealth",ply:Health())
+		self:SetNWInt("PilotHealth",ply:Health())
 		ply:DrawViewModel(false)
 		ply:DrawWorldModel(false)
-		ply:SetNetworkedBool("isDriveShuttle11",true)
-		ply:SetNetworkedEntity("Shuttle11",self.Entity)
+		ply:SetNWBool("isDriveShuttle11",true)
+		ply:SetNWEntity("Shuttle11",self.Entity)
 		if self.DoorOpen then
 			self:ToggleDoor()
 		end
@@ -196,13 +196,17 @@ function ENT:PhysicsCollide(Data, Phys)
 	end
 end
 
+function ENT:UpdateTransmitState() 
+	return TRANSMIT_ALWAYS
+end
+
 function ENT:OnRemove() 
 	if self.In then
 		self.Pilot:UnSpectate()
 		self.Pilot:DrawViewModel(true)
 		self.Pilot:DrawWorldModel(true)
 		self.Pilot:Spawn()
-		self.Pilot:SetNetworkedBool("isDriveShuttle11",false)
+		self.Pilot:SetNWBool("isDriveShuttle11",false)
 		self.Pilot:SetPos(self.Entity:GetPos()+Vector(0,0,100))
 	end
 	if self.transportInProgress then
@@ -389,12 +393,12 @@ function ENT:Exit()
 	if IsValid(self.PhaserBeam) then
 		self.PhaserBeam:Remove()
 	end
-	self.Pilot:SetHealth(self:GetNetworkedInt("PilotHealth"))
+	self.Pilot:SetHealth(self:GetNWInt("PilotHealth"))
 	self.Pilot:UnSpectate()
 	self.Pilot:DrawViewModel(true)
 	self.Pilot:DrawWorldModel(true)
 	self.Pilot:Spawn()
-	self.Pilot:SetNetworkedBool("isDriveShuttle11",false)
+	self.Pilot:SetNWBool("isDriveShuttle11",false)
 	self.Pilot:SetPos(self.Entity:GetPos()+self:GetForward()*-180+self:GetUp()*180)
 	self.In = false
 	self.Accel = {
@@ -467,7 +471,7 @@ function ENT:Think()
 	if self.TorpDelay<3 and self.TorpRefreshTime + 5 < CurTime() then
 		self.TorpDelay = self.TorpDelay+1
 		self.TorpRefreshTime = CurTime()
-		self:SetNetworkedInt("TorpLoad",self.TorpDelay)
+		self:SetNWInt("TorpLoad",self.TorpDelay)
 	end
 	if self.TorpDelay == 3 then
 		self.TorpRefreshTime = CurTime()
@@ -476,7 +480,7 @@ function ENT:Think()
 		self.PhaserCharge = self.PhaserCharge+4
 		if self.PhaserCharge > 100 then self.phaserCharge = 100 end
 	end
-	self:SetNetworkedInt("phaserCharge",self.PhaserCharge)
+	self:SetNWInt("phaserCharge",self.PhaserCharge)
 
 	if self.shieldCharge < 5000 then
 		self.shieldCharge = self.shieldCharge + 5
@@ -484,7 +488,7 @@ function ENT:Think()
 			self.shieldCharge = 5000
 		end
 	end
-	self:SetNetworkedInt("shieldCharge", self.shieldCharge)
+	self:SetNWInt("shieldCharge", self.shieldCharge)
 
 	if self.shouldExit and self.Accel.F == 0 and self.Accel.R == 0 and self.Accel.U == 0 then
 		self:Exit()
@@ -501,8 +505,8 @@ function ENT:TakeShieldDamage(Dmg)
 			self.ShieldOn = false
 			self.shieldCharge = 0
 		end
-		self:SetNetworkedInt("shieldCharge", self.shieldCharge)
-		self:SetNetworkedBool("shieldOn", self.ShieldOn)
+		self:SetNWInt("shieldCharge", self.shieldCharge)
+		self:SetNWBool("shieldOn", self.ShieldOn)
 	end
 end
 function ENT:ToggleShield()
@@ -512,7 +516,7 @@ function ENT:ToggleShield()
 		if IsValid(self.Shield) then
 			self.Shield:Deactivate()
 		end
-		self:SetNetworkedBool("shieldOn", self.ShieldOn)
+		self:SetNWBool("shieldOn", self.ShieldOn)
 		self.lastShieldToggle = CurTime()
 	else
 		if IsValid(self.Shield) then return end
@@ -524,7 +528,7 @@ function ENT:ToggleShield()
 		self.Shield:SetupProperties(Vector(25,25,15))
 		self.Shield:SetParent(self)
 		self.ShieldOn = true
-		self:SetNetworkedBool("shieldOn", self.ShieldOn)
+		self:SetNWBool("shieldOn", self.ShieldOn)
 		self.lastShieldToggle = CurTime()
 	end
 end
@@ -564,7 +568,7 @@ end
 
 function ENT:Shoot2()
 	self.TorpDelay = self.TorpDelay-1
-	self:SetNetworkedInt("TorpLoad",self.TorpDelay)
+	self:SetNWInt("TorpLoad",self.TorpDelay)
 	self.Entity:EmitSound("photonTorpedoSound.wav")
 	--self.Pilot:EmitSound("photonTorpedoSound.mp3")
 	local torp1 = ents.Create("torpedo_pulse")
@@ -602,7 +606,7 @@ end
 
 function ENT:TriggerOutput()
 	if WireLib then
-		WireLib.TriggerOutput( self.Entity, "Hull", self:GetNetworkedInt("health")/10000*100)
+		WireLib.TriggerOutput( self.Entity, "Hull", self:GetNWInt("health")/10000*100)
 		WireLib.TriggerOutput( self.Entity, "Shield", self.shieldCharge)
 	end
 end

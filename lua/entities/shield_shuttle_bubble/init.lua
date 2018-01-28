@@ -30,7 +30,6 @@ function ENT:Initialize()
 	self.Entity:SetTrigger(true)
 	self.Entity:DrawShadow(false)
 	self:SetupProperties(Vector(1,1,1))
-	util.AddNetworkString("shieldShuttle11Net")
 end
 
 

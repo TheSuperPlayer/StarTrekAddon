@@ -32,14 +32,27 @@ end
 
 local function AddButton(Index, PPos, PAng, PScale ,BPos, BSize, Func)   
     if Index != nil then
-        StarTrek.GUI.Buttons[Index] = setmetatable({
-            PlanePosition = PPos,
-            PlaneAngle = PAng,
-            PlaneScale = PScale,
-            ButtonPos = BPos,
-            ButtonSize = BSize,
-            Callback = Func
-        },STGUIButton)
+        if StarTrek.GUI.Buttons[Index] then
+            StarTrek.GUI.Buttons[Index] = setmetatable({
+                PlanePosition = PPos,
+                PlaneAngle = PAng,
+                PlaneScale = PScale,
+                ButtonPos = BPos,
+                ButtonSize = BSize,
+                Callback = Func,
+                LastUsed = StarTrek.GUI.Buttons[Index].LastUsed
+            },STGUIButton)
+        else
+            StarTrek.GUI.Buttons[Index] = setmetatable({
+                PlanePosition = PPos,
+                PlaneAngle = PAng,
+                PlaneScale = PScale,
+                ButtonPos = BPos,
+                ButtonSize = BSize,
+                Callback = Func,
+                LastUsed = CurTime()
+            },STGUIButton)
+        end
     end
 end
 
@@ -74,8 +87,9 @@ end
 hook.Add("KeyPress", "GUI", function(Ply,Key)
     if Key == IN_USE then
         for i, v in pairs(StarTrek.GUI.Buttons) do
-            if v:Pressed() then
+            if v:Pressed() and v.LastUsed+1 < CurTime() then
                 v.Callback(LocalPlayer())
+                v.LastUsed = CurTime()
             end
         end
     end

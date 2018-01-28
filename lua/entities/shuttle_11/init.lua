@@ -63,6 +63,7 @@ function ENT:Initialize()
 	self:SetNetworkedInt("health",self.EntHealth)
 	self.shieldCharge = 5000
 	self:SetNetworkedInt("shieldCharge",self.shieldCharge)
+	self.lastShieldToggle = CurTime()
 	self:SetNetworkedEntity("owner",self.Owner)
 	self:SetNetworkedEntity("entity",self.Entity)
 	self.PhaserBeam = nil
@@ -505,12 +506,14 @@ function ENT:TakeShieldDamage(Dmg)
 	end
 end
 function ENT:ToggleShield()
+	if not (self.lastShieldToggle+1 < CurTime()) then return end
 	if self.ShieldOn == true then
 		self.ShieldOn = false
 		if IsValid(self.Shield) then
 			self.Shield:Deactivate()
 		end
 		self:SetNetworkedBool("shieldOn", self.ShieldOn)
+		self.lastShieldToggle = CurTime()
 	else
 		if IsValid(self.Shield) then return end
 		if self.shieldCharge < 500 then return end
@@ -522,6 +525,7 @@ function ENT:ToggleShield()
 		self.Shield:SetParent(self)
 		self.ShieldOn = true
 		self:SetNetworkedBool("shieldOn", self.ShieldOn)
+		self.lastShieldToggle = CurTime()
 	end
 end
 

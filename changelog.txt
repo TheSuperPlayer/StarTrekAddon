@@ -14,6 +14,10 @@ If I find you breaking any of the statements above, I will take action according
 If you have any inquiries please contact me at:
 peterotto3475@gmail.com
 https://github.com/TheSuperPlayer
+--------------------------------------------------------
+Version 2.0.2 (27-01-2018)
+	- GUILib Fixes
+    - Net improvements
 
 Version 2.0.1 (27-01-2018)
 	- Fix for

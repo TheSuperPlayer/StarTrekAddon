@@ -68,8 +68,8 @@ function ENT:EndWarp()
 	net.SendToServer()
 end
 function ENT:Draw()
-	self.Entity:DrawModel() // Draw the model.
-	local shuttle= self.Entity--LocalPlayer():GetNWEntity("Shuttle11",LocalPlayer())
+	self.Entity:DrawModel()
+	local shuttle= self.Entity
 	
 	local pos = self.Entity:LocalToWorld(Vector(-149.5, 73, 242))
 	local ang = self.Entity:GetAngles()

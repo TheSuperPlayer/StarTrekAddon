@@ -201,7 +201,7 @@ function ENT:UpdateTransmitState()
 end
 
 function ENT:OnRemove() 
-	if self.In then
+	if self.In and IsValid(self.Pilot) then
 		self.Pilot:UnSpectate()
 		self.Pilot:DrawViewModel(true)
 		self.Pilot:DrawWorldModel(true)

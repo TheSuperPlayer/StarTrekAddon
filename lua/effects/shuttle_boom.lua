@@ -20,7 +20,6 @@ function EFFECT:Init( data )
 
 	self.Position = data:GetOrigin()
 	self.Emitter = ParticleEmitter( self.Position )
-
 	for i=1,1000 do
 		local rdmVec = VectorRand()*math.Rand(-10,10)
 		local particle = self.Emitter:Add( "effects/explosionP_1", self.Position)
@@ -43,5 +42,19 @@ function EFFECT:Init( data )
 		particle:SetRoll( math.Rand( 20, 80 ) )
 		particle:SetRollDelta( math.random( -1, 1 ) )
 		particle:SetColor(math.Rand( 180, 255 ),math.Rand( 200, 255 ),200)
+	end
+
+	for i=-180,180 do
+		local yNew = math.sin( math.rad( i )  ) 
+		local xNew = math.cos( math.rad( i )  ) 
+		local rdmVec = Vector(xNew, yNew ,0)*500
+		local particle = self.Emitter:Add( "particles/flamelet"..math.random(1,5), self.Position)
+		particle:SetDieTime( 4 )
+		particle:SetVelocity(rdmVec)
+		particle:SetStartAlpha( 200 )
+		particle:SetEndAlpha(0)
+		particle:SetStartSize(50 )
+		particle:SetEndSize( 90 )
+		particle:SetColor(0,120,255)
 	end
 end

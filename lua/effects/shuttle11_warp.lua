@@ -19,7 +19,7 @@
 function EFFECT:Init( data )
 	self.Shuttle = data:GetEntity()	
 	self.EndPos = data:GetStart()
-	self.Entity:SetModel("models/type11shuttle/Type11/Type 11 Shuttle.mdl")
+	self.Entity:SetModel("models/apwninthedarks_starship_pack/shuttlecraft/type_11_shuttle.mdl")
 	self.Entity:SetPos(self.Shuttle:GetPos())
 	self.Entity:SetAngles(self.Shuttle:GetAngles())
 	self.modelScale = Vector(1,1,1)

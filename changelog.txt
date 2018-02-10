@@ -15,6 +15,13 @@ If you have any inquiries please contact me at:
 peterotto3475@gmail.com
 https://github.com/TheSuperPlayer
 --------------------------------------------------------
+Version 2.0.4 (10-02-2018)
+    - Minor Fixes
+        - New shield damage logic
+        - Better button handling
+    - Updated Shuttle 11 explosion
+    - Moved and renamed models & materials
+    
 Version 2.0.2 (27-01-2018)
 	- GUILib Fixes
     - Net improvements

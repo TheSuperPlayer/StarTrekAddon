@@ -34,7 +34,7 @@ end
 
 
 function ENT:SetupProperties(type)
-	self.Entity:SetModel("models/type11shuttle/Shield/shuttle11shield.mdl")
+	self.Entity:SetModel("models/misc/shields/shuttle11shield.mdl")
 	local fx = EffectData()
 	fx:SetEntity(self.Entity)
 	fx:SetScale(1)
@@ -49,10 +49,10 @@ function ENT:StartTouch(Ent)
 	if Ent:GetParent() == self.Entity:GetParent() then return end
 	if Ent:GetClass() == "torpedo_pulse" and Ent.FiredFrom == self.Entity:GetParent() then return end
 	self:Repell(Ent)
-	self:DrawHit(Ent:GetPos(),10)
+	self:DrawHit(Ent:GetPos())
 end
 
-function ENT:DrawHit(Pos,Dmg)
+function ENT:DrawHit(Pos)
 	local fx = EffectData()
 		fx:SetOrigin(Pos)
 		fx:SetEntity(self.Entity)
@@ -61,12 +61,17 @@ function ENT:DrawHit(Pos,Dmg)
 end
 
 function ENT:Repell(Ent)
+	if Ent:IsPlayer() then return end
+	if Ent:IsNPC() then return end
 	local collidePos = Ent:GetPos()
 	local Normal = (self.Entity:GetPos()-collidePos):GetNormalized()
 	local Class = Ent:GetClass()
 	local PhyObj = Ent:GetPhysicsObject()
 	local Velocity = Ent:GetVelocity()
 	if Velocity == Vector(0,0,0) then return end
+	
+	local actualDmg = (math.abs((Velocity.x + Velocity.y + Velocity.z)/3) * PhyObj:GetMass())*0.1
+	local damageToTake = math.Clamp(actualDmg, 0, 200)
 
 	if Ent.PhysicsSimulate and not Ent.STShieldHitOverwriteInProgress then
 		local originalSimulation = Ent.PhysicsSimulate
@@ -80,6 +85,7 @@ function ENT:Repell(Ent)
 	if Ent.CAPOnShieldTouch then
 		Ent:CAPOnShieldTouch(self.Entity)
 	end
+	--[[
 	if Ent.StartTouch then
 		Ent:StartTouch(self.Entity:GetParent())
 	end
@@ -102,9 +108,9 @@ function ENT:Repell(Ent)
 			PhysObject = PhyObj
 		}
 		Ent:PhysicsCollide(collideTable, self.Entity:GetPhysicsObject())
-	end
+	end]]--
 	
-	--[[if IsValid(Ent) and IsValid(PhyObj) and not Ent:IsNPC() and not Ent:IsPlayer() then
+	if IsValid(Ent) and IsValid(PhyObj) and not Ent:IsNPC() and not Ent:IsPlayer() and not Ent:IsWorld() then
 		if Ent:IsPlayerHolding() then
 			PhyObj:EnableMotion(false)
 			timer.Simple(0.3, function() 
@@ -116,8 +122,8 @@ function ENT:Repell(Ent)
 		PhyObj:EnableMotion(true)
 		PhyObj:Wake()
 		PhyObj:ApplyForceOffset(-Normal*PhyObj:GetMass()*1000,collidePos+20*Normal)
-	end]]--
-
+	end
+	self.Entity:GetParent():TakeShieldDamage(damageToTake)
 end
 
 function ENT:OnTakeDamage(dmg)

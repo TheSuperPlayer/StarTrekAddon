@@ -22,14 +22,14 @@ function EFFECT:Init(data)
     if self.Mode == 1 then
         self.Entity:SetPos(self.Shuttle:GetPos()+self.Shuttle:GetForward()*195+self.Shuttle:GetUp()*90)
 		self.Entity:SetAngles(self.Shuttle:GetAngles()+Angle(20,0,0))
-        self.Entity:SetModel("models/type11shuttle/Door/Door - Type 11 Shuttle.mdl")
+        self.Entity:SetModel("models/apwninthedarks_starship_pack/doors/door___type_11_shuttle.mdl")
         self.FwdDif = 17.4
         self.UpDif = 34.7
         self.AngDif = -20
     elseif self.Mode == 2 then
         self.Entity:SetPos(self.Shuttle:GetPos()+self.Shuttle:GetForward()*212.4+self.Shuttle:GetUp()*124.7)
 		self.Entity:SetAngles(self.Shuttle:GetAngles()+Angle(0,0,0))
-        self.Entity:SetModel("models/type11shuttle/Door/Door - Type 11 Shuttle.mdl")
+        self.Entity:SetModel("models/apwninthedarks_starship_pack/doors/door___type_11_shuttle.mdl")
         self.FwdDif = -17.4
         self.UpDif = -34.7
         self.AngDif = 20

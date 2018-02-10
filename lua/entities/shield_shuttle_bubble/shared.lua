@@ -40,7 +40,7 @@ hook.Add("ST_Shield_Handler", "Shuttle11_Shield", function(shooter, bulletData, 
 	end
 
 	if SERVER then
-		shield:DrawHit(traceData.HitPos,bulletData.Damage or 5)
+		shield:DrawHit(traceData.HitPos,bulletData.Damage or 10)
 	end
 	return true
 end)

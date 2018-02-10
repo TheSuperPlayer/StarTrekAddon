@@ -23,7 +23,7 @@ function EFFECT:Init( data )
     self.Step = 1
     self.Entity:SetPos(self.Bubble:GetPos())
     self.Entity:SetAngles(self.Bubble:GetAngles())
-    self.Entity:SetModel("models/type11shuttle/Shield/shuttle11shield.mdl")
+    self.Entity:SetModel("models/misc/shields/shuttle11shield.mdl")
     self.shieldMat = Material("effects/shield_mat", nil)
     self.Entity:SetRenderClipPlaneEnabled( true ) 
     self.parentShuttle = self.Bubble:GetParent()

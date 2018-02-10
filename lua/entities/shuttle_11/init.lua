@@ -33,7 +33,7 @@ end
 function ENT:Initialize()
 	self.PositionSet = false
 	self.Target = Vector(0,0,0)
-	self.Entity:SetModel( "models/type11shuttle/Type11/Type 11 Shuttle.mdl" )
+	self.Entity:SetModel( "models/apwninthedarks_starship_pack/shuttlecraft/type_11_shuttle.mdl" )
 	self.Entity:PhysicsInit( SOLID_VPHYSICS )
 	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
 	self.Entity:SetSolid( SOLID_VPHYSICS )
@@ -83,7 +83,7 @@ function ENT:Initialize()
 	end
 	
 	self.Door = ents.Create("prop_physics")
-		self.Door:SetModel("models/type11shuttle/Door/Door - Type 11 Shuttle.mdl")
+		self.Door:SetModel("models/apwninthedarks_starship_pack/doors/door___type_11_shuttle.mdl")
 		self.Door:SetPos(self:GetPos()+self:GetForward()*212.4+self:GetUp()*124.7)
 		self.Door:SetAngles(self:GetAngles()+Angle(0,0,0))
 		
@@ -500,7 +500,6 @@ function ENT:TakeShieldDamage(Dmg)
 	if IsValid(self.Shield) then
 		self.shieldCharge = self.shieldCharge - math.Round(Dmg)
 		if self.shieldCharge <= 0 then
-			self.Shield:Deactivate()
 			self.Shield:Remove()
 			self.ShieldOn = false
 			self.shieldCharge = 0

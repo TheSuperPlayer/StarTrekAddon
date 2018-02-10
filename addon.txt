@@ -1,0 +1,11 @@
+"AddonInfo"
+{
+	"name"				"Star Trek Addon"
+	"version"			"2.0.4"
+	"up_date"			"10.02.2018"
+	"author_name"		"SuperPlayer"
+	"author_email"		"peterotto3475@gmail.com"
+	"author_url"		"https://github.com/TheSuperPlayer"
+	"info"				"A Star Trek Addon."
+	"override"			"0"
+}

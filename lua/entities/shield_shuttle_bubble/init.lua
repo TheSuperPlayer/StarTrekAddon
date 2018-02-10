@@ -38,7 +38,7 @@ function ENT:SetupProperties(type)
 	local fx = EffectData()
 	fx:SetEntity(self.Entity)
 	fx:SetScale(1)
-	util.Effect("shieldShuttleStatusChange",fx,true,true)
+	util.Effect("shield_shuttle_onoff",fx,true,true)
 end
 
 function ENT:UpdateTransmitState() 
@@ -57,7 +57,7 @@ function ENT:DrawHit(Pos)
 		fx:SetOrigin(Pos)
 		fx:SetEntity(self.Entity)
 		fx:SetMagnitude(50)
-		util.Effect("shieldShuttleHit",fx,true,true)
+		util.Effect("shield_shuttle_hit",fx,true,true)
 end
 
 function ENT:Repell(Ent)
@@ -140,7 +140,7 @@ function ENT:Deactivate()
 	local fx = EffectData()
 	fx:SetEntity(self.Entity)
 	fx:SetScale(2)
-	util.Effect("shieldShuttleStatusChange",fx,true,true)
+	util.Effect("shield_shuttle_onoff",fx,true,true)
 	self.shouldTerminate = true
 end
 

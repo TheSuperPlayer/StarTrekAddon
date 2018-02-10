@@ -38,7 +38,7 @@ if SERVER then
         self.Parent = nil
         self.Damage = 10
         self.Entity:SetAngles( Angle(0,0,0) ) 
-        self.soundEmitted = self.Entity:StartLoopingSound( "shuttle11PhaserSound.mp3" ) 
+        self.soundEmitted = self.Entity:StartLoopingSound( "shuttle11_phaser_sound.mp3" ) 
     end
 
     function ENT:OnRemove()

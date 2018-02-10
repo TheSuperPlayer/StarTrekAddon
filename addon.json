@@ -1,0 +1,14 @@
+{
+	"title"		:	"Star Trek Addon",
+	"type"		:	"vehicle",
+	"tags"		:	[ "roleplay", "fun" ],
+	"ignore"	:
+	[
+		"*.psd",
+		"*.vcproj",
+		"*.svn*",
+		"*.md",
+		"*.git*",
+		"*.txt"
+	]
+}

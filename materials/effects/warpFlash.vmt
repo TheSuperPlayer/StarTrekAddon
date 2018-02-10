@@ -1,6 +1,0 @@
-"UnlitGeneric"
-{
-	"$basetexture"	"effects/warpFlash"
-	"$selfillum"	"1"
-	"$additive"	"1"
-}

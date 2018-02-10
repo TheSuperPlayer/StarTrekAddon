@@ -22,7 +22,7 @@ function EFFECT:Init( data )
 	self.Emitter = ParticleEmitter( self.Position )
 	for i=1,1000 do
 		local rdmVec = VectorRand()*math.Rand(-10,10)
-		local particle = self.Emitter:Add( "effects/explosionP_1", self.Position)
+		local particle = self.Emitter:Add( "effects/explosionp_1", self.Position)
 		particle:SetVelocity(rdmVec*math.Rand(50,100))
 		particle:SetDieTime(3)
 		particle:SetStartAlpha( math.Rand(230, 250) )

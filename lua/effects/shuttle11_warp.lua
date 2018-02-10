@@ -26,7 +26,7 @@ function EFFECT:Init( data )
 	self.Progress = 0
 	self.Step = 1
 	self.NotEnd = true
-	self.WarpFlashMat = Material("effects/warpFlash")
+	self.WarpFlashMat = Material("effects/warp_flash")
 	self.Timing = CurTime()
 	self.Shuttle.inWarp = 1
 	self.Shuttle.warpEnd = self.EndPos

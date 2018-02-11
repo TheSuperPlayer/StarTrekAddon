@@ -68,9 +68,11 @@ function ENT:Repell(Ent)
 	local Class = Ent:GetClass()
 	local PhyObj = Ent:GetPhysicsObject()
 	local Velocity = Ent:GetVelocity()
+	local Mass = 100
+	if IsValid(PhyObj) then Mass = PhyObj:GetMass() end
 	if Velocity == Vector(0,0,0) then return end
 	
-	local actualDmg = (math.abs((Velocity.x + Velocity.y + Velocity.z)/3) * PhyObj:GetMass())*0.1
+	local actualDmg = (math.abs((Velocity.x + Velocity.y + Velocity.z)/3) * Mass)*0.1
 	local damageToTake = math.Clamp(actualDmg, 0, 200)
 
 	if Ent.PhysicsSimulate and not Ent.STShieldHitOverwriteInProgress then
@@ -122,6 +124,9 @@ function ENT:Repell(Ent)
 		PhyObj:EnableMotion(true)
 		PhyObj:Wake()
 		PhyObj:ApplyForceOffset(-Normal*PhyObj:GetMass()*1000,collidePos+20*Normal)
+	elseif Class == "rpg_missile" then
+		Ent:SetSaveValue( "m_bGuidingDisabled", true )
+		damageToTake = 50
 	end
 	self.Entity:GetParent():TakeShieldDamage(damageToTake)
 end

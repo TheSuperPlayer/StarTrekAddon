@@ -15,6 +15,10 @@ If you have any inquiries please contact me at:
 peterotto3475@gmail.com
 https://github.com/TheSuperPlayer
 --------------------------------------------------------
+Version 2.0.5 (11-02-2018)
+	- Fixed shield error when being hit by NULL PhysObj
+	- Added hit logic for rpg_missile
+	
 Version 2.0.4 (10-02-2018)
     - Minor Fixes
         - New shield damage logic

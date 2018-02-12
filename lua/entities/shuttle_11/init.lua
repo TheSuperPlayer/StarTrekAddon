@@ -77,7 +77,7 @@ function ENT:Initialize()
 	self.right = 0
 	self.WireWarpDest = Vector(0,0,0)
 	
-	if StarTrek.WireInstalled then
+	if not (WireAddon == nil) then
 		self.Inputs = Wire_CreateInputs(self.Entity, { "Self Destruct","Beam Up","Beam Down","Warp","Warp Destination [VECTOR]" })
 		self.Outputs = Wire_CreateOutputs(self.Entity, { "Hull","Shield" }) 
 	end
@@ -518,7 +518,7 @@ function ENT:Think()
 		end
 	end
 
-	if StarTrek.WireInstalled then
+	if not (WireAddon == nil) then
 		self:TriggerOutput()
 	end
 

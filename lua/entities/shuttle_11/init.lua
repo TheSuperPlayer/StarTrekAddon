@@ -40,7 +40,7 @@ function ENT:Initialize()
 	self.Entity:DrawShadow(true)
 		local phys = self.Entity:GetPhysicsObject()
 		if (phys:IsValid()) then
-			phys:SetMass(60000)
+			phys:SetMass(100000)
 		end
 	self.Entity:SetUseType( SIMPLE_USE )
 	self.Entity:StartMotionController()
@@ -77,19 +77,30 @@ function ENT:Initialize()
 	self.right = 0
 	self.WireWarpDest = Vector(0,0,0)
 	
-	if not (WireAddon == nil) then
+	if StarTrek.WireInstalled then
 		self.Inputs = Wire_CreateInputs(self.Entity, { "Self Destruct","Beam Up","Beam Down","Warp","Warp Destination [VECTOR]" })
 		self.Outputs = Wire_CreateOutputs(self.Entity, { "Hull","Shield" }) 
 	end
-	
+
+	if StarTrek.LSInstalled then
+		self.grav_plate = 1
+	end
+	self:SpawnDoor()
+end
+
+
+function ENT:SpawnDoor()
 	self.Door = ents.Create("prop_physics")
-		self.Door:SetModel("models/apwninthedarks_starship_pack/doors/door___type_11_shuttle.mdl")
-		self.Door:SetPos(self:GetPos()+self:GetForward()*212.4+self:GetUp()*124.7)
-		self.Door:SetAngles(self:GetAngles()+Angle(0,0,0))
-		
-		self.Door:Spawn()
-		self.Door:Activate()
-		self.Door:SetParent(self)
+	self.Door:SetModel("models/apwninthedarks_starship_pack/doors/door___type_11_shuttle.mdl")
+	self.Door:SetPos(self:GetPos()+self:GetForward()*212.4+self:GetUp()*124.7)
+	self.Door:SetAngles(self:GetAngles()+Angle(0,0,0))
+	
+	self.Door:Spawn()
+	self.Door:Activate()
+	self.Door:SetParent(self)
+	self.Door:CallOnRemove( "shuttle11_respawndoor_"..self.Entity:EntIndex(), function()
+		self:SpawnDoor()
+	end) 
 end
 
 function ENT:OnTakeDamage(dmg) 
@@ -149,38 +160,71 @@ end )
 function ENT:ToggleDoor(Ply)
 	if not IsValid(self.Door) then return end
  	if self.DoorOpen then
-	 	local fx = EffectData()
-		fx:SetScale(1)
-		fx:SetEntity(self.Entity)
-		util.Effect("shuttle11_door", fx, true)
-		self.DoorOpen = false
-		self.Door:SetParent(nil)
-		self.Door:SetPos(self:GetPos()+self:GetForward()*212.4+self:GetUp()*124.7)
-		self.Door:SetAngles(self:GetAngles()+Angle(0,0,0))
-		self.Door:SetParent(self.Entity)
-		timer.Create("shuttle11door_"..self.Entity:EntIndex(), 1.5, 1, function()
-			self.Door:SetNoDraw(false)
-		end)
+		if not co or not coroutine.resume( co ) then
+			co = coroutine.create( CloseDoor )
+			coroutine.resume( co, self.Entity, self.Door )
+			timer.Create("shuttle11_door_"..self.Entity:EntIndex(), 0.01, 100, function() 
+				coroutine.resume( co, self.Entity, self.Door )
+			end)
+		end
 	else
-		local fx = EffectData()
-		fx:SetScale(2)
-		fx:SetEntity(self.Entity)
-		util.Effect("shuttle11_door", fx, true)
-		self.DoorOpen = true
-		self.Door:SetParent(nil)
-		self.Door:SetPos(self.Entity:GetPos()+self.Entity:GetForward()*195+self.Entity:GetUp()*90)
-		self.Door:SetAngles(self:GetAngles()+Angle(20,0,0))
-		self.Door:SetParent(self.Entity)
-		timer.Create("shuttle11door_"..self.Entity:EntIndex(), 1.5, 1, function()			
-			self.Door:SetNoDraw(false)
-		end)
+		if not co or not coroutine.resume( co ) then
+			co = coroutine.create( OpenDoor )
+			coroutine.resume( co, self.Entity, self.Door )
+			timer.Create("shuttle11_door_"..self.Entity:EntIndex(), 0.01, 100, function() 
+				coroutine.resume( co, self.Entity, self.Door )
+			end)
+		end
 	end
-	self.Door:SetNoDraw(true)
-	self.NextDoorToggle = CurTime()+3
+	self.NextDoorToggle = CurTime()+1
 end
 
+function OpenDoor(Entity, Door)
+	if not IsValid(Entity) or not IsValid(Door) then return end
+	local OrignialPos = Door:GetPos()
+    local OrginialAngle = Door:GetAngles()
+
+	local FwdDif = -17.4
+	local UpDif = -34.7
+	local AngDif = 20
+
+	for I = 0, 100 do
+		local FwdM = FwdDif/100*I
+		local UpM = UpDif/100*I
+		local AngM = AngDif/100*I
+		Door:SetParent(nil)
+		Door:SetPos(OrignialPos + Entity:GetForward()*FwdM + Entity:GetUp()*(UpM))
+		Door:SetAngles(OrginialAngle + Angle(AngM,0,0))
+		Door:SetParent(Entity)
+		coroutine.yield()
+	end
+	Entity.DoorOpen = true
+end
+
+function CloseDoor(Entity, Door)
+	if not IsValid(Entity) or not IsValid(Door) then return end
+	local OrignialPos = Door:GetPos()
+    local OrginialAngle = Door:GetAngles()
+	local FwdDif = 17.4
+	local UpDif = 34.7
+	local AngDif = -20
+	for I = 0, 100 do
+		local FwdM = FwdDif/100*I
+		local UpM = UpDif/100*I
+		local AngM = AngDif/100*I
+		Door:SetParent(nil)
+		Door:SetPos(OrignialPos + Entity:GetForward()*FwdM + Entity:GetUp()*(UpM))
+		Door:SetAngles(OrginialAngle + Angle(AngM,0,0))
+		Door:SetParent(Entity)
+		coroutine.yield()
+	end
+	Entity.DoorOpen = false
+end
 function ENT:PhysicsCollide(Data, Phys)
 	if Data.DeltaTime > 0.5 then
+		local hitObj = Data.HitEntity
+		local hitClass = hitObj:GetClass()
+		if hitClass == "player" or hitObj:GetParent() == self.Entity then return end
 		local mass = self.Entity:GetPhysicsObject():GetMass()
 		local hitDamage = Data.Speed / 2
 		if self.ShieldOn and Data.Speed > 100 then
@@ -214,13 +258,15 @@ function ENT:OnRemove()
 		self.Owner:SetMoveType(MOVETYPE_WALK)
 		self.Owner:SetCollisionGroup(COLLISION_GROUP_NONE )
 	end
+	if IsValid(self.Door) then self.Door:RemoveCallOnRemove("shuttle11_respawndoor_"..self.Entity:EntIndex()) end
 	timer.Remove("shuttle11beam1_"..self.Entity:EntIndex())
 	timer.Remove("shuttle11beam2_"..self.Entity:EntIndex())
 	timer.Remove("ShuttlePhaserHeater_"..self.Entity:EntIndex())
-	timer.Remove("shuttle11door_"..self.Entity:EntIndex())
+	timer.Remove("shuttle11_door_"..self.Entity:EntIndex())
 
 	if IsValid(self.PhaserBeam) then self.PhaserBeam:Remove() end
 	if IsValid(self.Shield) then self.Shield:Remove() end
+	if IsValid(self.Door) then self.Door:Remove() end
 end
 
 function ENT:PhysicsSimulate( phys, deltatime )
@@ -411,7 +457,13 @@ function ENT:Exit()
 end
 
 function ENT:LSSupport()
-	
+	local CollisionBoundsMin, CollisionBoundsMax = self.Entity:GetCollisionBounds()
+	local entsInShip = ents.FindInBox( self.Entity:GetPos() + CollisionBoundsMin, self.Entity:GetPos() + CollisionBoundsMax ) 
+	for I = 1, #entsInShip do
+		if entsInShip[I]:IsPlayer() then
+			entsInShip[I]:LsResetSuit()
+		end
+	end
 end
 
 function ENT:Think()
@@ -465,9 +517,15 @@ function ENT:Think()
 			self:ToggleShield()
 		end
 	end
-	if not (WireAddon == nil) then
+
+	if StarTrek.WireInstalled then
 		self:TriggerOutput()
 	end
+
+	if StarTrek.LSInstalled then
+		self:LSSupport()
+	end
+
 	if self.TorpDelay<3 and self.TorpRefreshTime + 5 < CurTime() then
 		self.TorpDelay = self.TorpDelay+1
 		self.TorpRefreshTime = CurTime()

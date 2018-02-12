@@ -15,6 +15,12 @@ If you have any inquiries please contact me at:
 peterotto3475@gmail.com
 https://github.com/TheSuperPlayer
 --------------------------------------------------------
+Version 2.0.6 (12-02-2018)
+	- Fixed Door dealing damage to shuttle
+	- New way for door open / close
+    - Added LifeSupport & Gravity when using Spacebuild 3
+    - Increased use distance for buttons by 50
+
 Version 2.0.5 (11-02-2018)
 	- Fixed shield error when being hit by NULL PhysObj
 	- Added hit logic for rpg_missile

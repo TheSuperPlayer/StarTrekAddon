@@ -20,7 +20,7 @@ if not StarTrek.GUI then StarTrek.GUI = {} end
 StarTrek.GUI.Buttons = {}
 STGUIButton = {}
 STGUIButton.__index = STGUIButton
-StarTrek.GUI.UseRange = 100
+StarTrek.GUI.UseRange = 150
 
 local function Intersect(Pos,Ang)
     local trace = util.IntersectRayWithPlane( LocalPlayer():EyePos(), LocalPlayer():GetAimVector(), Pos, Ang:Up() ) 

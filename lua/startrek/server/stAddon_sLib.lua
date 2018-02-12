@@ -1,6 +1,14 @@
 --[[
 Main Functions
 ]]--
+
+function StarTrek.CheckForLS()
+	StarTrek.LSInstalled = false
+	if RESOURCES != nil then StarTrek.LSInstalled = true end
+	StarTrek.WireInstalled = false
+	if WireAddon != nil then StarTrek.WireInstalled = true end
+end
+
 function StarTrek.CheckVersion()
 	if (file.Exists("lua/version.lua","GAME")) then
 		local Version = tonumber(file.Read("lua/version.lua","GAME"));

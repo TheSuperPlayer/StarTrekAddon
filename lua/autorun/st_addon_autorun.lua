@@ -55,6 +55,9 @@ function StarTrek.Load()
 	loadFiles( "startrek/shared/", file.Find("startrek/shared/*.lua", "LUA"), "sh" )
 	loadFiles( "startrek/client/", file.Find("startrek/client/*.lua", "LUA"), "cl" )
 
+	if SERVER then
+		StarTrek.CheckForLS()
+	end
 	MsgN("=======================================================")
 end
 	

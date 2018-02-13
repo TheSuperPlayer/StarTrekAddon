@@ -19,11 +19,16 @@
 StarTrek = { }
 
 local function CheckVersion()
-	if (file.Exists("lua/version.lua","GAME")) then
-		StarTrek.Version = tonumber(file.Read("lua/version.lua","GAME"))
+	if (file.Exists("lua/startrek/version.lua","GAME")) then
+		StarTrek.Version = file.Read("lua/startrek/version.lua","GAME")
 	end
 end
-concommand.Add( "STA_version", CheckVersion)
+
+local function GetVersion()
+	if StarTrek.Version == nil then CheckVersion() end
+	print("Star Trek Addon Version: "..StarTrek.Version)
+end
+concommand.Add( "STA_version", GetVersion)
 
 local function loadFiles( Folder, Files, Env )
 	for k,v in ipairs( Files ) do

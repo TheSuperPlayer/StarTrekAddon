@@ -9,12 +9,6 @@ function StarTrek.CheckForLS()
 	if WireAddon != nil then StarTrek.WireInstalled = true end
 end
 
-function StarTrek.CheckVersion()
-	if (file.Exists("lua/version.lua","GAME")) then
-		local Version = tonumber(file.Read("lua/version.lua","GAME"));
-		return Version
-	end
-end
 function StarTrek.NameIsAvailible(Name)
 	local AllShips = ents.FindByClass("shuttle_*")
 	for I = 1,#AllShips do

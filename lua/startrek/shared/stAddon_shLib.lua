@@ -19,6 +19,29 @@
 StarTrek.Debug = false
 StarTrek.Shared = {}
 
+local function GetAddons()
+    if file.Exists("addons","GAME") then
+        local files, folders = file.Find( "addons/*", "GAME") 
+        return files, folders
+    else
+        print("ERROR! Couldnt find addon folder ?!?")
+    end
+end
+
+function StarTrek.PrintAddonInfo()
+	print("---------DEBUG PRINT---------")
+	print("Addon Version: "..StarTrek.Version)
+	print("Wire Addon Found: "..tostring( not (WireAddon == nil)))
+	print("Spacebuild Addon Found: "..tostring( RESOURCES != nil))
+    print("Stargate Addon Found: "..tostring( StarGate != nil))
+	print("Installed Addons: ")
+	local files, folders = GetAddons()
+    if files != nil then PrintTable(files) end
+    if folders != nil then PrintTable(folders) end
+	print("---------DEBUG END---------")
+end
+concommand.Add( "STA_PrintInfo", StarTrek.PrintAddonInfo)
+
 --[[Based upon the shield of CAP Stargate Addon]]--
 hook.Add("EntityFireBullets", "ST_Shield_Bullet_Handler", function( shooter, bulletData ) 
     if not bulletData then return end

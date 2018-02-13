@@ -16,6 +16,8 @@
     peterotto3475@gmail.com
     https://github.com/TheSuperPlayer
 ]]--
+
+if not CLIENT then return end
 surface.CreateFont( "MenuBig", {
 	font = "Arial",
 	size = 35

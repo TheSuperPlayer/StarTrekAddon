@@ -78,8 +78,8 @@ function ENT:Initialize()
 	self.WireWarpDest = Vector(0,0,0)
 	
 	if not (WireAddon == nil) then
-		self.Inputs = Wire_CreateInputs(self.Entity, { "Self Destruct","Beam Up","Beam Down","Warp","Warp Destination [VECTOR]" })
-		self.Outputs = Wire_CreateOutputs(self.Entity, { "Hull","Shield" }) 
+		WireLib.CreateInputs(self.Entity, { "Self Destruct","Beam Up","Beam Down","Warp","Warp Destination [VECTOR]" })
+		self.Outputs = WireLib.CreateOutputs(self.Entity, { "Hull","Shield" }) 
 	end
 
 	if StarTrek.LSInstalled then
@@ -323,11 +323,13 @@ function ENT:PhysicsSimulate( phys, deltatime )
 		moveParameters.angle = moveAng
 
 	else
-		self.Accel = {
-			F = math.Approach(self.Accel.F, 0, 10),
-			R = math.Approach(self.Accel.R, 0, 10),
-			U = math.Approach(self.Accel.U, 0, 10)
-		}	
+		if self.shouldExit then
+			self.Accel = {
+				F = math.Clamp(self.Accel.F-10, 0, 1000),
+				R = math.Clamp(self.Accel.R-10, 0, 1000),
+				U = math.Clamp(self.Accel.U-10, 0, 1000)
+			}	
+		end
 		movePos = movePos + (dirFwd*self.Accel.F) + (dirRight*self.Accel.R) + (dirUp*self.Accel.U)
 		if self.Accel.F == 0 and self.Accel.R == 0 and self.Accel.U == 0 then
 			movePos = self.HoverPos
@@ -439,21 +441,23 @@ function ENT:Exit()
 	if IsValid(self.PhaserBeam) then
 		self.PhaserBeam:Remove()
 	end
-	self.Pilot:SetHealth(self:GetNWInt("PilotHealth"))
-	self.Pilot:UnSpectate()
-	self.Pilot:DrawViewModel(true)
-	self.Pilot:DrawWorldModel(true)
-	self.Pilot:Spawn()
-	self.Pilot:SetNWBool("isDriveShuttle11",false)
-	self.Pilot:SetPos(self.Entity:GetPos()+self:GetForward()*-180+self:GetUp()*180)
-	self.In = false
-	self.Accel = {
-	F = 0,
-	R = 0,
-	U = 0
-	}		
 	self.HoverPos = self.Entity:GetPos()
-	self.shouldExit = false
+	timer.Simple(0.2,function() 
+		self.Pilot:SetHealth(self:GetNWInt("PilotHealth"))
+		self.Pilot:UnSpectate()
+		self.Pilot:DrawViewModel(true)
+		self.Pilot:DrawWorldModel(true)
+		self.Pilot:Spawn()
+		self.Pilot:SetNWBool("isDriveShuttle11",false)
+		self.Pilot:SetPos(self.Entity:GetPos()+self:GetForward()*-180+self:GetUp()*180)
+		self.In = false
+		self.Accel = {
+			F = 0,
+			R = 0,
+			U = 0
+		}		
+		self.shouldExit = false
+	end)
 end
 
 function ENT:LSSupport()

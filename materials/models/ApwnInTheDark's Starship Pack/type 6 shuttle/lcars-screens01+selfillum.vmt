@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "Models/ApwnInTheDark's Starship Pack/Type 6 Shuttle/LCARS-Screens01+SelfIllum"
+	
+	"$SelfIllum" "1"
+	
+	"$EnvMap" "Env_CubeMap"
+	"$EnvMapMask" "Models/ApwnInTheDark's Starship Pack/Type 6 Shuttle/Special/LCARS-Screens01-Reflect"
+}

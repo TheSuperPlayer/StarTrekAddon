@@ -85,6 +85,15 @@ function GetMeshCmd()
 	end
 
 end
-
 concommand.Add( "STA_MeshOfObj", GetMeshCmd)
+
+function GetEntInfo(ply, cmd, args )
+	local tr = ply:GetEyeTrace() 
+	local hitEnt = tr.Entity
+	if not IsValid(hitEnt) then print("No Entity found!") return end
+	print(hitEnt)
+	print(hitEnt:GetModel())
+end
+concommand.Add( "STA_EntInfo", GetEntInfo)
+
 StarTrek.Load()

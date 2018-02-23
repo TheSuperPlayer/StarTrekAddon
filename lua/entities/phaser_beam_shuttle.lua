@@ -49,17 +49,19 @@ if SERVER then
 	    return TRANSMIT_ALWAYS
     end
 
-    function ENT:Setup(parent, width, dmg)
+    function ENT:Setup(parent, posMod, width, dmg)
         self.Parent = parent
         self.Start = self.Parent:GetPos()
-        self.Entity:SetPos(self.Parent:GetPos()+ self.Parent:GetUp()*190 + self.Parent:GetForward()*-360)
+        self.Entity:SetPos(self.Parent:GetPos()+ posMod)
         self.Entity:SetParent(self.Parent)
         self.Damage = dmg
+        self.BeamWidth = width
+        self:SetNWInt("beamWidth", width)
     end
 
     function ENT:Think()
         if not IsValid(self.Parent) then self.Entity:Remove() end
-        self:SetNetworkedEntity("parentShield", self.Parent.Shield or nil)
+        self:SetNWEntity("parentShield", self.Parent.Shield or nil)
         self.Start = self.Entity:GetPos()
         self.Trace = util.TraceLine( {
             start = self.Start,
@@ -68,7 +70,7 @@ if SERVER then
         } )
 
         self.EndPos = self.Trace.HitPos
-        util.BlastDamage( self.Entity, self.Entity, self.EndPos, 10, self.Damage ) 
+        util.BlastDamage( self.Entity, self.Entity, self.EndPos, self.BeamWidth*2, self.Damage ) 
 
         if self.Trace.Entity:GetClass() == "shield_shuttle_bubble" then
             self.Trace.Entity:DrawHit(self.EndPos,self.Damage)
@@ -93,7 +95,8 @@ if CLIENT then
     function ENT:Draw()
         local matCord = CurTime()*-8
         render.SetMaterial(self.BeamMat)
-        render.DrawBeam( self.startPos, self.endPos, 20,matCord, matCord + self.startPos:Distance(self.endPos)/256, Color(255,0,0) )
+        render.DrawBeam( self.startPos, self.endPos, self:GetNWInt("beamWidth",15), matCord, matCord + self.startPos:Distance(self.endPos)/256, Color(255,0,0) )
+        --render.DrawSphere(self.startPos, 10, 10, 10, Color(255,0,0))
     end
     function ENT:Think()
         self.startPos = self.Entity:GetPos()

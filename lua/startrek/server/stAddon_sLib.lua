@@ -56,5 +56,5 @@ hook.Add("PhysgunPickup", "ST_DisablePickup", function(Ply, Ent)
 end)
 
 util.AddNetworkString( "ST_Shuttle11_NetHook")
-util.AddNetworkString("shieldShuttle11Net")
+util.AddNetworkString( "ST_Shuttle6_NetHook")
 

@@ -16,13 +16,16 @@
     peterotto3475@gmail.com
     https://github.com/TheSuperPlayer
 ]]--
+ENT.Type 		= "anim"
+ENT.Base 		= "base_gmodentity"
 
-include('shared.lua')
+ENT.PrintName	= "Type 6 Shuttle"
+ENT.Author		= "SuperPlayer"
+ENT.Category 	= "Star Trek"
+ENT.Contact		= "peterotto3475@gmail.com"
+ENT.Purpose			= "Transportation & Exploration"
+ENT.Spawnable			= true
+ENT.AdminSpawnable		= true
 
-function ENT:Initialize()
-end
-
-function ENT:Draw()
-    
-end
-
+ENT.MaxHull = 7500
+ENT.MaxShield = 3500

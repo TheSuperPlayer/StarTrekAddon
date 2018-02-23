@@ -161,7 +161,7 @@ function ENT:ToggleDoor(Ply)
 	if not IsValid(self.Door) then return end
  	if self.DoorOpen then
 		if not co or not coroutine.resume( co ) then
-			co = coroutine.create( CloseDoor )
+			co = coroutine.create( SC11CloseDoor )
 			coroutine.resume( co, self.Entity, self.Door )
 			timer.Create("shuttle11_door_"..self.Entity:EntIndex(), 0.01, 100, function() 
 				coroutine.resume( co, self.Entity, self.Door )
@@ -169,7 +169,7 @@ function ENT:ToggleDoor(Ply)
 		end
 	else
 		if not co or not coroutine.resume( co ) then
-			co = coroutine.create( OpenDoor )
+			co = coroutine.create( SC11OpenDoor )
 			coroutine.resume( co, self.Entity, self.Door )
 			timer.Create("shuttle11_door_"..self.Entity:EntIndex(), 0.01, 100, function() 
 				coroutine.resume( co, self.Entity, self.Door )
@@ -179,7 +179,7 @@ function ENT:ToggleDoor(Ply)
 	self.NextDoorToggle = CurTime()+1
 end
 
-function OpenDoor(Entity, Door)
+function SC11OpenDoor(Entity, Door)
 	if not IsValid(Entity) or not IsValid(Door) then return end
 	local OrignialPos = Door:GetPos()
     local OrginialAngle = Door:GetAngles()
@@ -201,7 +201,7 @@ function OpenDoor(Entity, Door)
 	Entity.DoorOpen = true
 end
 
-function CloseDoor(Entity, Door)
+function SC11CloseDoor(Entity, Door)
 	if not IsValid(Entity) or not IsValid(Door) then return end
 	local OrignialPos = Door:GetPos()
     local OrginialAngle = Door:GetAngles()
@@ -586,8 +586,8 @@ function ENT:ToggleShield()
 		self.Shield:SetAngles(self.Entity:GetAngles())
 		self.Shield:SetPos( self.Entity:GetPos() + self.Entity:GetUp()*170 )
 		self.Shield:Spawn()
-		self.Shield:SetupProperties(Vector(25,25,15))
 		self.Shield:SetParent(self)
+		self.Shield:SetupProperties("shuttle_11")
 		self.ShieldOn = true
 		self:SetNWBool("shieldOn", self.ShieldOn)
 		self.lastShieldToggle = CurTime()
@@ -622,7 +622,8 @@ function ENT:Shoot1()
 		self.PhaserBeam:SetPos(self.Entity:GetPos())
 		self.PhaserBeam:Spawn()
 		self.PhaserBeam:Activate()
-		self.PhaserBeam:Setup(self.Entity,20,60)
+		local posMod = Vector(0,0,0) + self.Entity:GetUp()*190 + self.Entity:GetForward()*-360
+		self.PhaserBeam:Setup(self.Entity, posMod, 20, 60)
 		self.PhaserBeam:SetParent(self.Entity)
 	end
 end
@@ -631,13 +632,12 @@ function ENT:Shoot2()
 	self.TorpDelay = self.TorpDelay-1
 	self:SetNWInt("TorpLoad",self.TorpDelay)
 	self.Entity:EmitSound("photonTorpedoSound.wav")
-	--self.Pilot:EmitSound("photonTorpedoSound.mp3")
 	local torp1 = ents.Create("torpedo_pulse")
 	torp1:SetPos(self.Entity:GetPos()+ self.Entity:GetUp()*190 + self.Entity:GetForward()*-360)
 	torp1:SetOwner(self.Entity:GetOwner())
 	torp1.FiredFrom = self.Entity
 	torp1:Spawn()
-	torp1:Settings(self:GetForward()*-1, 1500, 350, Vector(20,20,20))
+	torp1:Settings(self:GetForward()*-1, 1500, 450, Vector(20,20,20))
 	torp1:Activate()
 end
 

@@ -18,38 +18,6 @@
 ]]--
 
 include('shared.lua')
-surface.CreateFont("ScreenFont1", {
-		size = 150, --Size
-		weight = 900, --Boldness
-		antialias = true,
-		shadow = false,
-		font = "Arial"})
-surface.CreateFont("STFontBig", {
-		size = 80, --Size
-		weight = 900, --Boldness
-		antialias = true,
-		shadow = false,
-		font = "Arial"})
-		
-surface.CreateFont("STFontSmall", {
-		size = 40, --Size
-		weight = 900, --Boldness
-		antialias = true,
-		shadow = false,
-		font = "Arial"})	
-surface.CreateFont("HelmEnterFont", {
-		size = 20, --Size
-		weight = 900, --Boldness
-		antialias = true,
-		shadow = false,
-		font = "Arial"})	
-surface.CreateFont("ToggleShieldFont", {
-		size = 50, --Size
-		weight = 900, --Boldness
-		antialias = true,
-		shadow = false,
-		font = "Arial"})	
-
 local HelmPoly = {
 	{x=15,y=72},
 	{x=130,y=72},
@@ -243,7 +211,7 @@ end
 hook.Add("CalcView", "Shuttle11View", ViewPoint)
 
 function PrintHUD()
-	local shuttle=LocalPlayer():GetNWEntity("Shuttle11",LocalPlayer())
+	local shuttle = LocalPlayer():GetNWEntity("Shuttle11",LocalPlayer())
 	if LocalPlayer():GetNWBool("isDriveShuttle11",false) and shuttle~=LocalPlayer() and IsValid(shuttle) then
 			local Hull = math.Round(shuttle:GetNWInt("health")/10000*100)
 			local TorpType = shuttle:GetNWInt("TorpType")
@@ -320,6 +288,24 @@ function PrintHUD()
 
 			surface.SetTextPos( xCord(99) - w, yCord(91) )
 			surface.DrawText( "Torpedos: "..tostring(TorpLoad ))
+
+			local filterEnts = {shuttle}
+			for k,v in pairs(shuttle:GetChildren()) do
+				filterEnts[k+1] = v
+			end
+
+			local tr = util.TraceLine( {
+				start = shuttle:GetPos()+ shuttle:GetUp()*190 + shuttle:GetForward()*-360,
+				endpos = shuttle:GetPos() + shuttle:GetForward()*-10000,
+				filter = filterEnts
+			} )
+		
+		local screenCord = tr.HitPos:ToScreen()
+		if screenCord.visible then
+			surface.SetMaterial(aimOutlineMat)
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.DrawTexturedRect(screenCord.x - xCord(7)/2, screenCord.y-yCord(7)/2, xCord(7),yCord(7))
+		end
 	end
 end
 hook.Add("HUDPaint","Shuttle11HUD",PrintHUD)

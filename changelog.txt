@@ -15,11 +15,13 @@ If you have any inquiries please contact me at:
 peterotto3475@gmail.com
 https://github.com/TheSuperPlayer
 --------------------------------------------------------
-Version 2.0.7 (13-02-2018)
-	- Fixed wrong version reading
-	- Added debug functions
-	- Fixed player exit on shuttle
-	
+Version 2.1.0 (23-02-2018)
+	- Added First Version of Shuttle Type 6
+    - Added aim indicator to hud
+    - Updated in-game Help
+    - Updated icons for entities
+    - Changed balancing (more coming at some point)
+
 Version 2.0.6 (12-02-2018)
 	- Fixed Door dealing damage to shuttle
 	- New way for door open / close

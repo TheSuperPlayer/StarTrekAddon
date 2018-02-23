@@ -17,7 +17,6 @@
     https://github.com/TheSuperPlayer
 ]]--
 function EFFECT:Init( data )
-
 	self.Position = data:GetOrigin()
 	self.Emitter = ParticleEmitter( self.Position )
 	for i=1,1000 do

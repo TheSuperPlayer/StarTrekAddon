@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture" "vgui/misc/aim_outline"
+	"$selfillum" 1
+	"$translucent" 1      
+}

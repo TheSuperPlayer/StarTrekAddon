@@ -82,14 +82,12 @@ function StarTrek.Menu.HelpWindow()
     end
     
     objectList:AddColumn("Shuttles")
-    local line = objectList:AddLine( "Shuttle Type 11" )
-    line.infoID = "shuttle11"	
+    for k,v in pairs(StarTrek.Menu.InfoSheets) do
+        local line = objectList:AddLine( v.printName )
+        line.infoID = k
+    end  
     
-    local rowSelectedInfo = StarTrek.Menu.InfoSheets["shuttle11"]
-    objectList.OnRowSelected = function( listView, row )
-        local rowSelected = listView:GetLine(listView:GetSelectedLine()).infoID
-        rowSelectedInfo = StarTrek.Menu.InfoSheets[rowSelected]
-    end
+    local rowSelectedInfo = StarTrek.Menu.InfoSheets["shuttle6"]
 
     local infoView = vgui.Create("DPanel", container, "infoViewPanel")
     infoView:SetPos(objectList:GetWide()+5,0)
@@ -130,9 +128,14 @@ function StarTrek.Menu.HelpWindow()
     infoList:AddColumn( "Function" )
     infoList:AddColumn( "Usage" )
     infoList:AddColumn( "Additional Information" )
-                
-    for k,v in pairs(rowSelectedInfo.instructions) do
-        infoList:AddLine(v[1],v[2],v[3])
+
+    objectList.OnRowSelected = function( listView, row )
+        local rowSelected = listView:GetLine(listView:GetSelectedLine()).infoID
+        rowSelectedInfo = StarTrek.Menu.InfoSheets[rowSelected]
+        infoList:Clear()
+        for k,v in pairs(rowSelectedInfo.instructions) do
+            infoList:AddLine(v[1],v[2],v[3])
+        end
     end
 end
 
@@ -188,5 +191,24 @@ StarTrek.Menu.InfoSheets["shuttle11"] = {
         {"Toggle Door", "Buttons inside and outside", "Press use when close and aiming to them"},
         {"Warp", "Use Wire Addon", "If you dont have the wire addon, get it"},
         {"Beaming", "Use Wire Addon", "If you dont have the wire addon, get it"}
+    }
+}
+StarTrek.Menu.InfoSheets["shuttle6"] = {
+    image = Material("vgui/entities/shuttle_6"),
+    printName = "Shuttle Type 6",
+    hullHealth = 7500,
+    shieldStrength = 3500,
+    weaponInfo = {
+        {"Phaser","45/s",1}
+    },
+    maxSpeed = 1000,
+    description = "Best Description",
+    instructions = {
+        {"Move Forward", "Forward Key (Usually W)", ""},
+        {"Move Backward", "Forward Key (Usually S)", ""},
+        {"Move Left", "Left Key (Usually A)", ""},
+        {"Move Right", "Right Key (Usually D)", ""},
+        {"Toggle Shield", "R Key", "Only works while piloting"},
+        {"Toggle Door", "Buttons inside and outside", "Press use when close and aiming to them"}
     }
 }

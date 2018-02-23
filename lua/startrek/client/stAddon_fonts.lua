@@ -26,3 +26,39 @@ surface.CreateFont( "MenuNormal", {
 	font = "Arial",
 	size = 20
 } )
+surface.CreateFont( "MenuBold", {
+	font = "Arial",
+	weight = 500,
+	size = 20
+} )
+surface.CreateFont("ScreenFont1", {
+		size = 150, --Size
+		weight = 900, --Boldness
+		antialias = true,
+		shadow = false,
+		font = "Arial"})
+surface.CreateFont("STFontBig", {
+		size = 80, --Size
+		weight = 900, --Boldness
+		antialias = true,
+		shadow = false,
+		font = "Arial"})
+		
+surface.CreateFont("STFontSmall", {
+		size = 40, --Size
+		weight = 900, --Boldness
+		antialias = true,
+		shadow = false,
+		font = "Arial"})	
+surface.CreateFont("HelmEnterFont", {
+		size = 20, --Size
+		weight = 900, --Boldness
+		antialias = true,
+		shadow = false,
+		font = "Arial"})	
+surface.CreateFont("ToggleShieldFont", {
+		size = 50, --Size
+		weight = 900, --Boldness
+		antialias = true,
+		shadow = false,
+		font = "Arial"})	

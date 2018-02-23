@@ -21,20 +21,27 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 ENT.ST_DisablePickup = true
+
 function ENT:Initialize()
 	self.Entity:SetMoveType(MOVETYPE_NONE)
 	self.Entity:SetSolid(SOLID_VPHYSICS)
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
 	self.Entity:SetCollisionGroup(COLLISION_GROUP_WEAPON)
-	self.Entity:SetRenderMode(RENDERMODE_NONE)
+	--self.Entity:SetRenderMode(RENDERMODE_NONE)
 	self.Entity:SetTrigger(true)
 	self.Entity:DrawShadow(false)
-	self:SetupProperties(Vector(1,1,1))
 end
 
 
-function ENT:SetupProperties(type)
-	self.Entity:SetModel("models/misc/shields/shuttle11shield.mdl")
+function ENT:SetupProperties(parentClass)
+	if parentClass == "shuttle_11" then
+		self.Entity:SetModel("models/misc/shields/shuttle11shield.mdl")
+	elseif parentClass == "shuttle_6" then
+		self.Entity:SetModel("models/misc/shields/shieldshuttle6.mdl")
+		local rotateAng = self.Entity:GetParent():GetAngles()
+		rotateAng:RotateAroundAxis(rotateAng:Up(),90)
+		self.Entity:SetAngles(rotateAng)
+	end
 	local fx = EffectData()
 	fx:SetEntity(self.Entity)
 	fx:SetScale(1)
@@ -139,6 +146,7 @@ function ENT:Think()
 	if not IsValid(self.Entity:GetParent()) then self:Remove() end
 	self.Entity:Extinguish()
 	self.Entity:GetParent():Extinguish()
+	if self.shouldTerminate then SafeRemoveEntity(self.Entity) end
 end
 
 function ENT:Deactivate()

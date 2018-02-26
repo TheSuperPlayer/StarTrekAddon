@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/ApwnInTheDark's Starship Pack/Enterprise-D (V2)/CeilingPattern1"
+
+	"$SelfIllum" "1"
+	"$SelfIllumMask" "models/ApwnInTheDark's Starship Pack/Shared Materials/Special/LCARS-FullReflect"
+}

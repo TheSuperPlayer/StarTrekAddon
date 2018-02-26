@@ -352,7 +352,7 @@ function ENT:OnTakeDamage(dmg)
 		actualDmg = maxDmg/2
 	end
 	self:SetNWInt("health",health-actualDmg)
-	if math.Round(self:GetNWInt("health")/10000*100) <=0 then
+	if math.Round(self:GetNWInt("health")/self.MaxHull*100) <=0 then
 		self:SetNWInt("health",0) 
 		self:Boom()
 	end

@@ -186,6 +186,10 @@ function ViewPoint( ply, origin, angles, fov )
 			view.origin = shuttle:GetPos()+shuttle:GetUp()*250+add+ply:GetAimVector():GetNormal()*dist
 			view.angles = angles
 		end
+		shuttle:DrawModel()
+		for k,v in pairs(shuttle:GetChildren()) do
+			v:DrawModel()
+		end
 		return view
 	end
 end
